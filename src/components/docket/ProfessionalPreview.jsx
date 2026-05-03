@@ -201,7 +201,7 @@ export default function ProfessionalPreview({ data = {} }) {
         </div>
 
         {/* ── GRADING DOCKET ── */}
-        <div style={{ border: `1px solid ${BORDER}`, borderRadius: 10, overflow: 'hidden', background: '#fff' }}>
+        <div style={{ border: '1px solid #BFDBFE', borderRadius: 10, overflow: 'hidden', background: '#EFF6FF' }}>
           {/* Grading Header */}
           <div style={{ background: '#fff', borderBottom: `1px solid ${BORDER}`, padding: '18px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>
