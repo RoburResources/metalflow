@@ -156,9 +156,7 @@ export default function ProfessionalPreview({ data = {} }) {
         <div style={{ background: 'linear-gradient(180deg, #eaf3ff, #eef6ff)', border: '1.4px solid #afc8e8', padding: '9px 11px 8px' }}>
           {/* Grading Header */}
           <div style={{ display: 'grid', gridTemplateColumns: '90px 1fr 180px', gap: 12, alignItems: 'start', paddingBottom: 9, borderBottom: '2px solid #1a1a1a', marginBottom: 9 }}>
-            <div style={{ border: '1.2px solid #1a1a1a', padding: '4px 6px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#fff' }}>
-              <img src={LOGO_URL} alt="Metal X" style={{ width: 55, height: 36, objectFit: 'contain' }} />
-            </div>
+            <img src={LOGO_URL} alt="Metal X" style={{ width: 90, height: 36, objectFit: 'contain' }} />
             <div>
               <div style={{ fontWeight: 900, fontSize: 16, letterSpacing: 2 }}>METAL X <span style={{ fontWeight: 500, color: '#7A8898' }}>RECYCLING</span></div>
               <div style={{ fontSize: 10, color: '#7A8898' }}><strong>ABN: 90 687 484 975</strong></div>
