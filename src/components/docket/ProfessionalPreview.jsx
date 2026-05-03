@@ -61,7 +61,7 @@ export default function ProfessionalPreview({ data = {} }) {
           </div>
           <div style={{ textAlign: 'right' }}>
             <div style={{ fontSize: 10, color: MUTED, letterSpacing: '1px', textTransform: 'uppercase', marginBottom: 4 }}>Ticket Reference</div>
-            <div style={{ fontSize: 22, fontWeight: 900, color: '#0D1A2E', letterSpacing: 1 }}>{fmt(data.ticket_no, 'MX-XXXXXXX')}</div>
+            <div style={{ fontSize: 22, fontWeight: 900, color: BLUE, letterSpacing: 1 }}>{fmt(data.ticket_no, 'MX-XXXXXXX')}</div>
             <div style={{ fontSize: 11, color: MUTED, marginTop: 4 }}>{fmt(data.order_date)}</div>
           </div>
         </div>
