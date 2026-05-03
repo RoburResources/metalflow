@@ -3,7 +3,9 @@ import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Plus, Printer, X, ToggleLeft, ToggleRight, ChevronLeft, LayoutDashboard } from "lucide-react";
+import { Printer, Download, X, ToggleLeft, ToggleRight, ChevronLeft } from "lucide-react";
+import { jsPDF } from "jspdf";
+import html2canvas from "html2canvas";
 import { Link, useNavigate } from "react-router-dom";
 import DocketForm from "@/components/docket/DocketForm";
 import ProfessionalPreview from "@/components/docket/ProfessionalPreview";
@@ -69,10 +71,40 @@ export default function WeightDocket() {
     const win = window.open('', '_blank');
     win.document.write(`<!DOCTYPE html><html><head><title>Metal X — ${formData.ticket_no}</title>
       <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-      <style>*{box-sizing:border-box;margin:0;padding:0;} body{font-family:Inter,sans-serif;background:#EEF0F4;-webkit-print-color-adjust:exact;print-color-adjust:exact;} @media print{body{background:#fff;}}</style>
+      <style>*{box-sizing:border-box;margin:0;padding:0;} body{font-family:Inter,sans-serif;background:#f8fafc;-webkit-print-color-adjust:exact;print-color-adjust:exact;} @media print{body{background:#fff;}}</style>
     </head><body>${content}</body></html>`);
     win.document.close();
     setTimeout(() => win.print(), 700);
+  };
+
+  const [downloading, setDownloading] = useState(false);
+  const handleDownloadPDF = async () => {
+    if (!printRef.current) return;
+    setDownloading(true);
+    try {
+      const canvas = await html2canvas(printRef.current, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#f8fafc',
+        logging: false,
+      });
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+      const pageW = pdf.internal.pageSize.getWidth();
+      const pageH = pdf.internal.pageSize.getHeight();
+      const imgW = pageW;
+      const imgH = (canvas.height * pageW) / canvas.width;
+      let y = 0;
+      let remaining = imgH;
+      while (remaining > 0) {
+        pdf.addImage(imgData, 'PNG', 0, -y, imgW, imgH);
+        remaining -= pageH;
+        if (remaining > 0) { pdf.addPage(); y += pageH; }
+      }
+      pdf.save(`${formData.ticket_no || 'docket'}.pdf`);
+    } finally {
+      setDownloading(false);
+    }
   };
 
   if (loadingDocket) {
@@ -108,6 +140,9 @@ export default function WeightDocket() {
             </button>
             <Button onClick={handlePrint} variant="outline" className="border-[#EAEEF5] text-[#1E4D99] hover:bg-[#EFF4FF] h-9 px-4 text-sm rounded-[10px]">
               <Printer className="w-4 h-4 mr-1.5" /> Print
+            </Button>
+            <Button onClick={() => { setPreviewOpen(true); }} variant="outline" className="border-[#EAEEF5] text-[#1E4D99] hover:bg-[#EFF4FF] h-9 px-4 text-sm rounded-[10px]">
+              <Download className="w-4 h-4 mr-1.5" /> Download PDF
             </Button>
           </div>
         </div>
@@ -150,9 +185,12 @@ export default function WeightDocket() {
               </button>
             </DialogTitle>
           </DialogHeader>
-          <div className="pt-4 flex justify-end mb-3">
-            <Button onClick={handlePrint} style={{ background: 'var(--mx-hero-gradient)' }} className="text-white text-sm font-semibold rounded-[10px] h-9 px-4">
-              <Printer className="w-4 h-4 mr-1.5" /> Print / Save PDF
+          <div className="pt-4 flex justify-end gap-2 mb-3">
+            <Button onClick={handlePrint} variant="outline" className="border-[#EAEEF5] text-[#1E4D99] hover:bg-[#EFF4FF] h-9 px-4 text-sm rounded-[10px]">
+              <Printer className="w-4 h-4 mr-1.5" /> Print
+            </Button>
+            <Button onClick={handleDownloadPDF} disabled={downloading} style={{ background: 'var(--mx-hero-gradient)' }} className="text-white text-sm font-semibold rounded-[10px] h-9 px-4">
+              <Download className="w-4 h-4 mr-1.5" /> {downloading ? 'Generating…' : 'Download PDF'}
             </Button>
           </div>
           <div ref={printRef} className="overflow-x-auto">
