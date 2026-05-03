@@ -203,15 +203,15 @@ export default function ProfessionalPreview({ data = {} }) {
         {/* ── GRADING DOCKET ── */}
         <div style={{ border: `1px solid ${BORDER}`, borderRadius: 10, overflow: 'hidden', background: '#fff' }}>
           {/* Grading Header */}
-          <div style={{ background: NAVY, padding: '18px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ background: '#fff', borderBottom: `1px solid ${BORDER}`, padding: '18px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>
-              <img src={LOGO_URL} alt="Metal X" style={{ height: 28, objectFit: 'contain', filter: 'brightness(0) invert(1)', marginBottom: 4 }} />
-              <div style={{ fontSize: 9, color: '#90C4F9', textTransform: 'uppercase', letterSpacing: '1px' }}>Material Grading Docket</div>
+              <img src={LOGO_URL} alt="Metal X" style={{ height: 28, objectFit: 'contain', marginBottom: 4 }} />
+              <div style={{ fontSize: 9, color: MUTED, textTransform: 'uppercase', letterSpacing: '1px' }}>Material Grading Docket</div>
             </div>
             <div style={{ textAlign: 'right' }}>
-              <div style={{ fontSize: 9, color: '#90C4F9', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: 4 }}>Docket No.</div>
-              <div style={{ fontSize: 22, fontWeight: 900, color: '#fff', letterSpacing: 1 }}>{fmt(data.docket_no)}</div>
-              <div style={{ fontSize: 10, color: '#90C4F9', marginTop: 2 }}>{fmt(data.docket_date)}</div>
+              <div style={{ fontSize: 9, color: MUTED, letterSpacing: '1px', textTransform: 'uppercase', marginBottom: 4 }}>Docket No.</div>
+              <div style={{ fontSize: 22, fontWeight: 900, color: '#0D1A2E', letterSpacing: 1 }}>{fmt(data.docket_no)}</div>
+              <div style={{ fontSize: 10, color: MUTED, marginTop: 2 }}>{fmt(data.docket_date)}</div>
             </div>
           </div>
 
