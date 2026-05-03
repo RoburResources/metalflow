@@ -157,9 +157,9 @@ export default function ProfessionalPreview({ data = {} }) {
             </tbody>
           </table>
           {/* Total bar */}
-          <div style={{ marginTop: 10, background: NAVY, borderRadius: 6, padding: '10px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontWeight: 700, fontSize: 12, color: '#fff' }}>Total Price</span>
-            <span style={{ fontWeight: 900, fontSize: 16, color: '#fff' }}>${fmtNum(data.total_price)}</span>
+          <div style={{ marginTop: 10, background: '#EFF6FF', border: '1px solid #BFDBFE', borderRadius: 6, padding: '10px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ fontWeight: 700, fontSize: 12, color: BLUE }}>Total Price</span>
+            <span style={{ fontWeight: 900, fontSize: 16, color: BLUE }}>${fmtNum(data.total_price)}</span>
           </div>
         </Card>
 
