@@ -4,7 +4,7 @@
   "properties": {
     "ticket_no": {
       "type": "string",
-      "description": "Weigh bridge ticket number e.g. MX-S0005289"
+      "description": "Auto-generated weigh bridge ticket number e.g. MX-S0005289"
     },
     "order_date": {
       "type": "string",
@@ -53,7 +53,13 @@
     "from_location": {
       "type": "string"
     },
+    "from_company": {
+      "type": "string"
+    },
     "to_location": {
+      "type": "string"
+    },
+    "to_company": {
       "type": "string"
     },
     "goods_weighed": {
@@ -86,12 +92,20 @@
     "driver_name": {
       "type": "string"
     },
+    "driver_signature": {
+      "type": "string",
+      "description": "Base64 data URI of driver signature"
+    },
     "weigh_person_name": {
       "type": "string"
     },
+    "weigh_person_signature": {
+      "type": "string",
+      "description": "Base64 data URI of weigh person signature"
+    },
     "docket_no": {
       "type": "string",
-      "description": "Grading docket number"
+      "description": "Same as ticket_no / job number"
     },
     "docket_date": {
       "type": "string",
@@ -121,8 +135,34 @@
     "amount": {
       "type": "number"
     },
+    "material_grades": {
+      "type": "array",
+      "description": "Selected material grades with optional percentages",
+      "items": {
+        "type": "object",
+        "properties": {
+          "grade": {
+            "type": "string"
+          },
+          "percentage": {
+            "type": "number"
+          },
+          "rubbish_unit": {
+            "type": "string",
+            "enum": [
+              "percentage",
+              "kg"
+            ]
+          },
+          "rubbish_value": {
+            "type": "number"
+          }
+        }
+      }
+    },
     "material_grade": {
-      "type": "string"
+      "type": "string",
+      "description": "Legacy single grade string"
     },
     "product_description": {
       "type": "string"
@@ -132,6 +172,13 @@
     },
     "comments": {
       "type": "string"
+    },
+    "photo_urls": {
+      "type": "array",
+      "description": "Uploaded photo URLs for material, weighbridge, vehicle",
+      "items": {
+        "type": "string"
+      }
     },
     "status": {
       "type": "string",

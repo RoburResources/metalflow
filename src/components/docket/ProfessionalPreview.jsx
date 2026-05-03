@@ -1,5 +1,4 @@
-import MXLogo from "./MXLogo";
-
+const LOGO_URL = "https://media.base44.com/images/public/69f7b7e128899b8db1200527/c72ebbf3f_MetalXLogo.png";
 const fmt = (v, fallback = "—") => v || fallback;
 const fmtNum = (v, decimals = 2) => v ? parseFloat(v).toFixed(decimals) : "—";
 const Checkbox = ({ checked }) => (
@@ -24,7 +23,7 @@ export default function ProfessionalPreview({ data = {} }) {
         {/* Header */}
         <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr 190px', gap: 18, alignItems: 'start', marginBottom: 16 }}>
           <div style={{ border: '1.2px solid #1a1a1a', padding: '8px 10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <div style={{ fontWeight: 900, fontSize: 14, letterSpacing: 1 }}>Metal <span style={{ color: '#1E4D99' }}>X</span></div>
+            <img src={LOGO_URL} alt="Metal X" style={{ width: 80, height: 52, objectFit: 'contain' }} />
           </div>
           <div>
             <div style={{ fontWeight: 800, fontSize: 13 }}>Metal X Renewables Pty Ltd</div>
@@ -119,13 +118,33 @@ export default function ProfessionalPreview({ data = {} }) {
 
         {/* Signatures */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 22, marginBottom: 10 }}>
-          {[['Driver Name', data.driver_name], ['Driver Signature', ''], ['Weigh Person Name', data.weigh_person_name], ['Weigh Person Signature', '']].map(([l, v]) => (
-            <div key={l} style={{ display: 'grid', gridTemplateColumns: '110px 1fr', gap: 10, alignItems: 'end', color: '#7A8898', fontSize: 11 }}>
-              <span>{l}:</span>
-              <span style={{ borderBottom: '1px solid #1a1a1a', height: 18, fontWeight: 900, color: '#0D1A2E', paddingLeft: 2 }}>{v || ''}</span>
+          {[['Driver Name', data.driver_name, data.driver_signature], ['Weigh Person Name', data.weigh_person_name, data.weigh_person_signature]].map(([l, name, sig]) => (
+            <div key={l}>
+              <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: 10, alignItems: 'end', color: '#7A8898', fontSize: 11, marginBottom: 4 }}>
+                <span>{l}:</span>
+                <span style={{ borderBottom: '1px solid #1a1a1a', height: 18, fontWeight: 900, color: '#0D1A2E', paddingLeft: 2 }}>{name || ''}</span>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: 10, alignItems: 'end', color: '#7A8898', fontSize: 11 }}>
+                <span>Signature:</span>
+                <div style={{ borderBottom: '1px solid #1a1a1a', height: 40, overflow: 'hidden' }}>
+                  {sig && <img src={sig} alt="sig" style={{ height: 38, objectFit: 'contain', objectPosition: 'left center' }} />}
+                </div>
+              </div>
             </div>
           ))}
         </div>
+
+        {/* Photos */}
+        {data.photo_urls && data.photo_urls.length > 0 && (
+          <div style={{ marginBottom: 10 }}>
+            <div style={{ fontWeight: 900, fontSize: 10, letterSpacing: 1, textTransform: 'uppercase', color: '#AAB0C4', marginBottom: 6 }}>Evidence Photos</div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 6 }}>
+              {data.photo_urls.slice(0, 8).map((url, i) => (
+                <img key={i} src={url} alt={`Photo ${i+1}`} style={{ width: '100%', height: 56, objectFit: 'cover', borderRadius: 4, border: '1px solid #bfc3c8' }} />
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Cut Line */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, margin: '10px 0', color: '#7A8898', fontSize: 9, letterSpacing: '1.5px', fontWeight: 900, textTransform: 'uppercase' }}>
@@ -138,8 +157,8 @@ export default function ProfessionalPreview({ data = {} }) {
         <div style={{ background: 'linear-gradient(180deg, #eaf3ff, #eef6ff)', border: '1.4px solid #afc8e8', padding: '9px 11px 8px' }}>
           {/* Grading Header */}
           <div style={{ display: 'grid', gridTemplateColumns: '90px 1fr 180px', gap: 12, alignItems: 'start', paddingBottom: 9, borderBottom: '2px solid #1a1a1a', marginBottom: 9 }}>
-            <div style={{ border: '1.2px solid #1a1a1a', padding: '6px 8px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#fff' }}>
-              <div style={{ fontWeight: 900, fontSize: 12 }}>Metal <span style={{ color: '#1E4D99' }}>X</span></div>
+            <div style={{ border: '1.2px solid #1a1a1a', padding: '4px 6px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#fff' }}>
+              <img src={LOGO_URL} alt="Metal X" style={{ width: 55, height: 36, objectFit: 'contain' }} />
             </div>
             <div>
               <div style={{ fontWeight: 900, fontSize: 16, letterSpacing: 2 }}>METAL X <span style={{ fontWeight: 500, color: '#7A8898' }}>RECYCLING</span></div>
@@ -216,7 +235,16 @@ export default function ProfessionalPreview({ data = {} }) {
             </div>
             <div style={{ borderBottom: '2px solid #1a1a1a', minHeight: 60, padding: '6px 8px' }}>
               <div style={{ fontWeight: 900, fontSize: 10, marginBottom: 3 }}>Material Grade / Product Description</div>
-              <div style={{ fontWeight: 700 }}>{[data.material_grade, data.product_description].filter(Boolean).join(' ')}</div>
+              {data.material_grades?.length > 0 ? (
+                <div>{data.material_grades.map((g, i) => (
+                  <span key={i} style={{ marginRight: 6, fontSize: 10, fontWeight: 700 }}>
+                    {g.grade}{data.material_grades.length > 1 ? ` (${g.percentage||0}%)` : ''}
+                    {g.grade === 'Rubbish / Contamination' && g.rubbish_value ? ` ${g.rubbish_value}${g.rubbish_unit==='kg'?'kg':'%'}` : ''}
+                  </span>
+                ))}</div>
+              ) : (
+                <div style={{ fontWeight: 700 }}>{[data.material_grade, data.product_description].filter(Boolean).join(' ')}</div>
+              )}
             </div>
 
             {/* Row 6 — Comments */}

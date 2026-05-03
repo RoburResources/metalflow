@@ -3,6 +3,8 @@ import MXLogo from "./MXLogo";
 const fmt = (v, fallback = "—") => v || fallback;
 const fmtNum = (v, decimals = 2) => v ? parseFloat(v).toFixed(decimals) : "—";
 
+const LOGO_URL = "https://media.base44.com/images/public/69f7b7e128899b8db1200527/c72ebbf3f_MetalXLogo.png";
+
 const MetaRow = ({ label, value }) => (
   <div className="flex flex-col gap-0.5">
     <span className="text-[9px] font-bold tracking-[1.5px] uppercase" style={{ color: 'var(--mx-muted-2)' }}>{label}</span>
@@ -62,7 +64,7 @@ export default function UserFriendlyPreview({ data = {} }) {
       <div className="rounded-[18px] overflow-hidden" style={{ background: 'var(--mx-hero-gradient)' }}>
         <div className="px-6 pt-5 pb-4">
           <div className="flex items-start justify-between">
-            <MXLogo size="md" dark />
+            <img src={LOGO_URL} alt="Metal X" style={{ height: 32, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
             <div className="text-right">
               <p className="text-[9px] font-bold tracking-[2px] uppercase text-[#90C4F9]">Weigh Bridge</p>
               <p className="text-lg font-900 text-white mt-0.5" style={{ fontWeight: 900 }}>{fmt(data.ticket_no, 'MX-XXXXXXXX')}</p>
@@ -122,6 +124,38 @@ export default function UserFriendlyPreview({ data = {} }) {
         </div>
       </Card>
 
+      {/* Signatures */}
+      {(data.driver_signature || data.weigh_person_signature) && (
+        <Card title="Signatures" eyebrow="Verified">
+          <div className="grid grid-cols-2 gap-4">
+            {[['Driver', data.driver_signature, data.driver_name], ['Weigh Person', data.weigh_person_signature, data.weigh_person_name]].map(([role, sig, name]) => (
+              <div key={role} className="flex flex-col gap-2">
+                <p className="text-[9px] font-bold tracking-[1.5px] uppercase" style={{ color: 'var(--mx-muted-2)' }}>{role}</p>
+                {sig ? (
+                  <div className="rounded-[8px] border border-[#EAEEF5] overflow-hidden bg-white">
+                    <img src={sig} alt={`${role} signature`} className="w-full h-14 object-contain" />
+                  </div>
+                ) : <div className="h-14 rounded-[8px] border border-dashed border-[#EAEEF5] flex items-center justify-center"><span className="text-[10px]" style={{ color: 'var(--mx-muted-2)' }}>Not signed</span></div>}
+                <p className="text-xs font-semibold" style={{ color: 'var(--mx-text)' }}>{name || '—'}</p>
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
+
+      {/* Photos */}
+      {data.photo_urls && data.photo_urls.length > 0 && (
+        <Card title="Photos" eyebrow={`Evidence · ${data.photo_urls.length} image${data.photo_urls.length > 1 ? 's' : ''}`}>
+          <div className="grid grid-cols-3 gap-2">
+            {data.photo_urls.map((url, i) => (
+              <div key={i} className="rounded-[8px] overflow-hidden border border-[#EAEEF5] aspect-square bg-[#F4F7FC]">
+                <img src={url} alt={`Photo ${i + 1}`} className="w-full h-full object-cover" />
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
+
       {/* Grading Docket */}
       <div className="rounded-[18px] overflow-hidden border border-[#DCE9FA]" style={{ background: 'linear-gradient(180deg, #eaf3ff, #eef6ff)' }}>
         <div className="px-5 py-4 border-b border-[#DCE9FA] flex items-center justify-between">
@@ -150,10 +184,21 @@ export default function UserFriendlyPreview({ data = {} }) {
             <MetaRow label="Cash Payment" value={data.cash_payment} />
             <MetaRow label="Amount" value={data.amount ? `$${fmtNum(data.amount)}` : '—'} />
           </div>
-          {(data.material_grade || data.product_description) && (
+          {(data.material_grades?.length > 0 || data.material_grade || data.product_description) && (
             <div className="rounded-[10px] bg-white border border-[#EAEEF5] p-4">
-              <p className="text-[9px] font-bold tracking-[1.5px] uppercase mb-1" style={{ color: 'var(--mx-muted-2)' }}>Material Grade / Product Description</p>
-              <p className="text-sm font-700" style={{ fontWeight: 700, color: 'var(--mx-text)' }}>{[data.material_grade, data.product_description].filter(Boolean).join(' ')}</p>
+              <p className="text-[9px] font-bold tracking-[1.5px] uppercase mb-2" style={{ color: 'var(--mx-muted-2)' }}>Material Grade / Product Description</p>
+              {data.material_grades?.length > 0 ? (
+                <div className="flex flex-wrap gap-1.5">
+                  {data.material_grades.map((g, i) => (
+                    <span key={i} className="px-2 py-1 rounded-full text-xs font-semibold bg-[#EFF4FF] text-[#1E4D99] border border-[#DCE9FA]">
+                      {g.grade}{data.material_grades.length > 1 ? ` ${g.percentage || 0}%` : ''}
+                      {g.grade === 'Rubbish / Contamination' && g.rubbish_value ? ` (${g.rubbish_value}${g.rubbish_unit === 'kg' ? 'kg' : '%'})` : ''}
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm font-700" style={{ fontWeight: 700, color: 'var(--mx-text)' }}>{[data.material_grade, data.product_description].filter(Boolean).join(' ')}</p>
+              )}
             </div>
           )}
           {(data.contamination_notes || data.comments) && (
