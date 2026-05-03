@@ -49,20 +49,20 @@ export default function ProfessionalPreview({ data = {} }) {
     }}>
 
       {/* ── HEADER ── */}
-      <div style={{ background: NAVY, padding: '24px 32px 20px', marginBottom: 24 }}>
+      <div style={{ background: '#fff', borderBottom: `1px solid ${BORDER}`, padding: '24px 32px 20px', marginBottom: 24 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <div>
-            <img src={LOGO_URL} alt="Metal X" style={{ height: 36, objectFit: 'contain', filter: 'brightness(0) invert(1)', marginBottom: 6 }} />
-            <div style={{ fontSize: 10, color: '#90C4F9', marginTop: 2 }}>Renewables Pty Ltd</div>
-            <div style={{ fontSize: 10, color: '#5BA3F5', marginTop: 1 }}>Shaping a Sustainable Future</div>
-            <div style={{ marginTop: 12, display: 'inline-block', border: `1px solid #90C4F9`, borderRadius: 4, padding: '3px 10px', fontSize: 9, fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase', color: '#90C4F9' }}>
+            <img src={LOGO_URL} alt="Metal X" style={{ height: 36, objectFit: 'contain', marginBottom: 6 }} />
+            <div style={{ fontSize: 10, color: MUTED, marginTop: 2 }}>Renewables Pty Ltd</div>
+            <div style={{ fontSize: 10, color: MUTED, marginTop: 1 }}>Shaping a Sustainable Future</div>
+            <div style={{ marginTop: 12, display: 'inline-block', border: `1px solid ${BORDER}`, borderRadius: 4, padding: '3px 10px', fontSize: 9, fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase', color: MUTED }}>
               DIRECT MEASUREMENT TICKET
             </div>
           </div>
           <div style={{ textAlign: 'right' }}>
-            <div style={{ fontSize: 10, color: '#90C4F9', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: 4 }}>Ticket Reference</div>
-            <div style={{ fontSize: 22, fontWeight: 900, color: '#fff', letterSpacing: 1 }}>{fmt(data.ticket_no, 'MX-XXXXXXX')}</div>
-            <div style={{ fontSize: 11, color: '#90C4F9', marginTop: 4 }}>{fmt(data.order_date)}</div>
+            <div style={{ fontSize: 10, color: MUTED, letterSpacing: '1px', textTransform: 'uppercase', marginBottom: 4 }}>Ticket Reference</div>
+            <div style={{ fontSize: 22, fontWeight: 900, color: '#0D1A2E', letterSpacing: 1 }}>{fmt(data.ticket_no, 'MX-XXXXXXX')}</div>
+            <div style={{ fontSize: 11, color: MUTED, marginTop: 4 }}>{fmt(data.order_date)}</div>
           </div>
         </div>
       </div>
