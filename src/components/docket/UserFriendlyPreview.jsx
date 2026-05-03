@@ -60,27 +60,27 @@ const CheckBadge = ({ label, checked }) => (
 export default function UserFriendlyPreview({ data = {} }) {
   return (
     <div className="w-full max-w-2xl mx-auto space-y-4 font-[Inter,sans-serif]">
-      {/* Hero Header */}
-      <div className="rounded-[18px] overflow-hidden" style={{ background: 'var(--mx-hero-gradient)' }}>
+      {/* Header — white card */}
+      <div className="rounded-[18px] overflow-hidden bg-white border border-[#EAEEF5] shadow-[0_2px_18px_rgba(11,25,41,0.06)]">
         <div className="px-6 pt-5 pb-4">
           <div className="flex items-start justify-between">
-            <img src={LOGO_URL} alt="Metal X" style={{ height: 32, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
+            <img src={LOGO_URL} alt="Metal X" style={{ height: 32, objectFit: 'contain' }} />
             <div className="text-right">
-              <p className="text-[9px] font-bold tracking-[2px] uppercase text-[#90C4F9]">Weigh Bridge</p>
-              <p className="text-lg font-900 text-white mt-0.5" style={{ fontWeight: 900 }}>{fmt(data.ticket_no, 'MX-XXXXXXXX')}</p>
+              <p className="text-[9px] font-bold tracking-[2px] uppercase" style={{ color: 'var(--mx-muted-2)' }}>Weigh Bridge</p>
+              <p className="text-lg mt-0.5" style={{ fontWeight: 900, color: 'var(--mx-text)' }}>{fmt(data.ticket_no, 'MX-XXXXXXXX')}</p>
             </div>
           </div>
-          <div className="mt-4 pt-4 border-t border-white/10">
-            <p className="text-[9px] font-bold tracking-[2px] uppercase text-[#90C4F9]">Document Type</p>
-            <h1 className="text-xl font-900 text-white tracking-wide mt-0.5" style={{ fontWeight: 900 }}>DIRECT MEASUREMENT TICKET</h1>
+          <div className="mt-4 pt-4 border-t border-[#EAEEF5]">
+            <p className="text-[9px] font-bold tracking-[2px] uppercase" style={{ color: 'var(--mx-muted-2)' }}>Document Type</p>
+            <h1 className="text-xl tracking-wide mt-0.5" style={{ fontWeight: 900, color: 'var(--mx-text)' }}>DIRECT MEASUREMENT TICKET</h1>
           </div>
         </div>
         {/* Meta Strip */}
-        <div className="grid grid-cols-3 border-t border-white/10">
+        <div className="grid grid-cols-3 border-t border-[#EAEEF5] bg-[#F4F7FC]">
           {[['Order Date', data.order_date], ['Status', null], ['Driver', data.driver_name]].map(([l, v], i) => (
-            <div key={l} className={`px-5 py-3 ${i < 2 ? 'border-r border-white/10' : ''}`}>
-              <p className="text-[9px] font-bold tracking-[1.5px] uppercase text-[#90C4F9]">{l}</p>
-              {l === 'Status' ? <StatusPill status={data.status} /> : <p className="text-sm font-700 text-white mt-0.5" style={{ fontWeight: 700 }}>{fmt(v)}</p>}
+            <div key={l} className={`px-5 py-3 ${i < 2 ? 'border-r border-[#EAEEF5]' : ''}`}>
+              <p className="text-[9px] font-bold tracking-[1.5px] uppercase" style={{ color: 'var(--mx-muted-2)' }}>{l}</p>
+              {l === 'Status' ? <StatusPill status={data.status} /> : <p className="text-sm mt-0.5" style={{ fontWeight: 700, color: 'var(--mx-text)' }}>{fmt(v)}</p>}
             </div>
           ))}
         </div>
@@ -157,7 +157,7 @@ export default function UserFriendlyPreview({ data = {} }) {
       )}
 
       {/* Grading Docket */}
-      <div className="rounded-[18px] overflow-hidden border border-[#DCE9FA]" style={{ background: 'linear-gradient(180deg, #eaf3ff, #eef6ff)' }}>
+      <div className="rounded-[18px] overflow-hidden border border-[#BFDBFE]" style={{ background: '#EFF6FF' }}>
         <div className="px-5 py-4 border-b border-[#DCE9FA] flex items-center justify-between">
           <div>
             <p className="text-[9px] font-bold tracking-[2px] uppercase" style={{ color: '#1E4D99' }}>Material Grading Docket</p>
