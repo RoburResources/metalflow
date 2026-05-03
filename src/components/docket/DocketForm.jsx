@@ -185,9 +185,6 @@ export default function DocketForm({ data, onChange, onPreview, onSave, saving, 
               <Field label="Goods Weighed / Reference">
                 <Input className={mx_input} placeholder="3401" value={data.goods_weighed || ''} onChange={e => set('goods_weighed', e.target.value)} />
               </Field>
-              <Field label="Marks & Brands">
-                <Input className={mx_input} value={data.marks_brands || ''} onChange={e => set('marks_brands', e.target.value)} />
-              </Field>
               <Field label="Driver Name">
                 <Input className={mx_input} placeholder="MICHAEL" value={data.driver_name || ''} onChange={e => set('driver_name', e.target.value)} />
               </Field>

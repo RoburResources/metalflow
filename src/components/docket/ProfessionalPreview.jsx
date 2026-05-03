@@ -17,8 +17,7 @@ export default function ProfessionalPreview({ data = {} }) {
       fontSize: 11, lineHeight: 1.3, color: '#0D1A2E',
       boxShadow: '0 8px 32px rgba(0,0,0,0.14)', padding: '13mm 14mm'
     }}>
-      {/* Outer frame */}
-      <div style={{ border: '1.4px solid #1a1a1a', padding: '10mm 11mm 7mm', minHeight: 'calc(297mm - 26mm)' }}>
+      <div style={{ padding: '0', minHeight: 'calc(297mm - 26mm)' }}>
 
         {/* Header */}
         <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr 190px', gap: 18, alignItems: 'start', marginBottom: 16 }}>
@@ -89,7 +88,7 @@ export default function ProfessionalPreview({ data = {} }) {
         {/* Movement + Weights */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 330px', gap: 22, marginBottom: 16, alignItems: 'start' }}>
           <div style={{ display: 'grid', gridTemplateColumns: '110px 1fr', rowGap: 7, columnGap: 10, paddingTop: 4 }}>
-            {[['From Location', data.from_location], ['To Location', data.to_location], ['Goods Weighed', data.goods_weighed], ['Marks & Brands', data.marks_brands], ['Rego#', data.rego]].map(([l, v]) => (
+            {[['From Location', data.from_location], ['To Location', data.to_location], ['Goods Weighed', data.goods_weighed], ['Rego#', data.rego]].map(([l, v]) => (
               <>
                 <div key={l + 'l'} style={{ color: '#7A8898', fontSize: 11 }}>{l}</div>
                 <div key={l + 'v'} style={{ fontWeight: 900, fontSize: 11, letterSpacing: 0.5 }}>{fmt(v)}</div>
