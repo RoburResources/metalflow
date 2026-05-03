@@ -1,88 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
+    /* Metal X Locked Brand Tokens */
+    --mx-navy-900: #08111F;
+    --mx-navy-850: #0B1929;
+    --mx-navy-700: #12305C;
+    --mx-blue-600: #1E4D99;
+    --mx-blue-400: #5BA3F5;
+    --mx-blue-250: #90C4F9;
+    --mx-ice-050: #F4F7FC;
+    --mx-ice-075: #EFF4FF;
+    --mx-ice-100: #E5EEFB;
+    --mx-ice-150: #DCE9FA;
+    --mx-white: #FFFFFF;
+    --mx-paper: #EEF0F4;
+    --mx-soft: #F5F7FB;
+    --mx-line: #EAEEF5;
+    --mx-text: #0D1A2E;
+    --mx-muted: #7A8898;
+    --mx-muted-2: #AAB0C4;
+    --mx-metal-grey: #6F7472;
+    --mx-radius-sm: 8px;
+    --mx-radius-md: 12px;
+    --mx-radius-lg: 18px;
+    --mx-radius-xl: 22px;
+    --mx-radius-pill: 999px;
+    --mx-shadow-soft: 0 2px 18px rgba(11,25,41,0.06);
+    --mx-shadow-card: 0 10px 40px rgba(11,25,41,0.10);
+    --mx-shadow-modal: 0 20px 60px rgba(11,25,41,0.18);
+    --mx-hero-gradient: linear-gradient(135deg, #0B1929 0%, #12305C 55%, #1E4D99 100%);
+
+    /* Tailwind shadcn tokens mapped to MX */
+    --background: 220 20% 95%;
+    --foreground: 215 70% 10%;
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
+    --card-foreground: 215 70% 10%;
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
-    --accent-foreground: 0 0% 9%;
-    --destructive: 0 84.2% 60.2%;
+    --popover-foreground: 215 70% 10%;
+    --primary: 220 68% 36%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 30% 95%;
+    --secondary-foreground: 215 70% 10%;
+    --muted: 220 20% 94%;
+    --muted-foreground: 215 15% 47%;
+    --accent: 220 40% 93%;
+    --accent-foreground: 220 68% 36%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
-    --ring: 0 0% 3.9%;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
-    --radius: 0.5rem;
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --border: 220 20% 90%;
+    --input: 220 20% 90%;
+    --ring: 220 68% 36%;
+    --radius: 0.75rem;
   }
 
-  .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-}
-
-
-
-@layer base {
   * {
     @apply border-border outline-ring/50;
   }
 
   body {
     @apply bg-background text-foreground;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    color: var(--mx-text);
+    background: var(--mx-paper);
   }
 }

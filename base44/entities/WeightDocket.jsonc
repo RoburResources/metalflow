@@ -1,0 +1,150 @@
+{
+  "name": "WeightDocket",
+  "type": "object",
+  "properties": {
+    "ticket_no": {
+      "type": "string",
+      "description": "Weigh bridge ticket number e.g. MX-S0005289"
+    },
+    "order_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "bill_to_name": {
+      "type": "string"
+    },
+    "bill_to_address": {
+      "type": "string"
+    },
+    "line_description": {
+      "type": "string",
+      "default": "Internal Weight Record"
+    },
+    "qty": {
+      "type": "number",
+      "default": 1
+    },
+    "uom": {
+      "type": "string",
+      "default": "Each"
+    },
+    "unit_price": {
+      "type": "number",
+      "default": 0
+    },
+    "ext_price": {
+      "type": "number",
+      "default": 0
+    },
+    "total_price": {
+      "type": "number",
+      "default": 0
+    },
+    "payment_status": {
+      "type": "string",
+      "enum": [
+        "Paid on Account",
+        "Pending",
+        "Cash",
+        "Invoice"
+      ],
+      "default": "Paid on Account"
+    },
+    "from_location": {
+      "type": "string"
+    },
+    "to_location": {
+      "type": "string"
+    },
+    "goods_weighed": {
+      "type": "string"
+    },
+    "marks_brands": {
+      "type": "string"
+    },
+    "rego": {
+      "type": "string"
+    },
+    "gross_tonnes": {
+      "type": "number"
+    },
+    "gross_datetime": {
+      "type": "string"
+    },
+    "tare_tonnes": {
+      "type": "number"
+    },
+    "tare_datetime": {
+      "type": "string"
+    },
+    "net_tonnes": {
+      "type": "number"
+    },
+    "net_datetime": {
+      "type": "string"
+    },
+    "driver_name": {
+      "type": "string"
+    },
+    "weigh_person_name": {
+      "type": "string"
+    },
+    "docket_no": {
+      "type": "string",
+      "description": "Grading docket number"
+    },
+    "docket_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "pickup": {
+      "type": "boolean",
+      "default": false
+    },
+    "swap": {
+      "type": "boolean",
+      "default": false
+    },
+    "deliver": {
+      "type": "boolean",
+      "default": true
+    },
+    "customer_name": {
+      "type": "string"
+    },
+    "site_address": {
+      "type": "string"
+    },
+    "cash_payment": {
+      "type": "string"
+    },
+    "amount": {
+      "type": "number"
+    },
+    "material_grade": {
+      "type": "string"
+    },
+    "product_description": {
+      "type": "string"
+    },
+    "contamination_notes": {
+      "type": "string"
+    },
+    "comments": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "Draft",
+        "Pending",
+        "Verified",
+        "Archived"
+      ],
+      "default": "Draft"
+    }
+  },
+  "required": [
+    "ticket_no"
+  ]
+}
