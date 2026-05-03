@@ -133,11 +133,22 @@ export default function DocketForm({ data, onChange, onPreview, onSave, saving, 
               <Field label="Bill To — Address">
                 <Input className={mx_input} placeholder="PO Box Z5150, St Georges Terrace 6000" value={data.bill_to_address || ''} onChange={e => set('bill_to_address', e.target.value)} />
               </Field>
+              <Field label="Customer Email (for verified docket delivery)">
+                <Input className={mx_input} type="email" placeholder="customer@example.com" value={data.customer_email || ''} onChange={e => set('customer_email', e.target.value)} />
+              </Field>
               <Field label="Payment Status">
                 <Select value={data.payment_status || 'Paid on Account'} onValueChange={v => set('payment_status', v)}>
                   <SelectTrigger className={mx_input}><SelectValue /></SelectTrigger>
                   <SelectContent>
                     {['Paid on Account','Pending','Cash','Invoice'].map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </Field>
+              <Field label="Docket Status">
+                <Select value={data.status || 'Draft'} onValueChange={v => set('status', v)}>
+                  <SelectTrigger className={mx_input}><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {['Draft','Pending','Verified','Archived'].map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
                   </SelectContent>
                 </Select>
               </Field>

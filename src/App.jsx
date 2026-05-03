@@ -8,6 +8,8 @@ import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 // Add page imports here
 import Dashboard from "./pages/Dashboard";
 import WeightDocket from "./pages/WeightDocket";
+import Fleet from "./pages/Fleet";
+import AuditTrail from "./pages/AuditTrail";
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -38,6 +40,8 @@ const AuthenticatedApp = () => {
       {/* Add your page Route elements here */}
       <Route path="/" element={<Dashboard />} />
       <Route path="/docket" element={<WeightDocket />} />
+      <Route path="/fleet" element={<Fleet />} />
+      <Route path="/audit" element={<AuditTrail />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );

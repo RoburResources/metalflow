@@ -1,0 +1,44 @@
+{
+  "name": "AuditLog",
+  "type": "object",
+  "properties": {
+    "event_type": {
+      "type": "string",
+      "description": "Type of event e.g. docket_verified, email_sent"
+    },
+    "ticket_no": {
+      "type": "string"
+    },
+    "docket_id": {
+      "type": "string"
+    },
+    "customer_name": {
+      "type": "string"
+    },
+    "customer_email": {
+      "type": "string"
+    },
+    "rego": {
+      "type": "string"
+    },
+    "net_tonnes": {
+      "type": "number"
+    },
+    "performed_by": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "success",
+        "failed",
+        "info"
+      ],
+      "default": "info"
+    },
+    "details": {
+      "type": "string"
+    }
+  },
+  "required": []
+}

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { Search, Filter, Plus, FileText, Trash2, Eye, TrendingUp, Scale, Truck, CheckCircle2 } from "lucide-react";
+import { Search, Plus, FileText, Trash2, Eye, Truck, ShieldCheck } from "lucide-react";
 import MXLogo from "@/components/docket/MXLogo";
 
 const statusColors = {
@@ -12,6 +12,7 @@ const statusColors = {
   Archived: 'bg-[#F4F4F6] text-[#AAB0C4] border-[#EAEEF5]',
 };
 
+// eslint-disable-next-line no-unused-vars
 const KPI = ({ label, value, sub, icon: Icon, color }) => (
   <div className="rounded-[14px] bg-white border border-[#EAEEF5] shadow-[0_2px_18px_rgba(11,25,41,0.06)] p-5">
     <div className="flex items-start justify-between mb-3">
@@ -63,11 +64,23 @@ export default function Dashboard() {
             <img src="https://media.base44.com/images/public/69f7b7e128899b8db1200527/c72ebbf3f_MetalXLogo.png" alt="Metal X" className="h-8 object-contain" />
             <span className="text-[10px] font-bold tracking-[2px] uppercase ml-2 pl-3 border-l border-[#EAEEF5]" style={{ color: 'var(--mx-muted-2)' }}>Operations Dashboard</span>
           </div>
-          <Link to="/docket">
-            <button style={{ background: 'var(--mx-hero-gradient)' }} className="text-white text-sm font-semibold rounded-[10px] h-9 px-4 flex items-center gap-1.5">
-              <Plus className="w-4 h-4" /> New Docket
-            </button>
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link to="/fleet">
+              <button className="text-[#1E4D99] text-xs font-semibold rounded-[10px] h-9 px-3 flex items-center gap-1.5 border border-[#DCE9FA] bg-[#EFF4FF] hover:bg-[#E5EEFB]">
+                <Truck className="w-4 h-4" /> Fleet
+              </button>
+            </Link>
+            <Link to="/audit">
+              <button className="text-[#1E4D99] text-xs font-semibold rounded-[10px] h-9 px-3 flex items-center gap-1.5 border border-[#DCE9FA] bg-[#EFF4FF] hover:bg-[#E5EEFB]">
+                <ShieldCheck className="w-4 h-4" /> Audit
+              </button>
+            </Link>
+            <Link to="/docket">
+              <button style={{ background: 'var(--mx-hero-gradient)' }} className="text-white text-sm font-semibold rounded-[10px] h-9 px-4 flex items-center gap-1.5">
+                <Plus className="w-4 h-4" /> New Docket
+              </button>
+            </Link>
+          </div>
         </div>
       </nav>
 

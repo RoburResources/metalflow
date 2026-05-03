@@ -104,8 +104,7 @@
       "description": "Base64 data URI of weigh person signature"
     },
     "docket_no": {
-      "type": "string",
-      "description": "Same as ticket_no / job number"
+      "type": "string"
     },
     "docket_date": {
       "type": "string",
@@ -125,6 +124,10 @@
     },
     "customer_name": {
       "type": "string"
+    },
+    "customer_email": {
+      "type": "string",
+      "description": "Customer email for verified docket delivery"
     },
     "site_address": {
       "type": "string"
@@ -175,7 +178,7 @@
     },
     "photo_urls": {
       "type": "array",
-      "description": "Uploaded photo URLs for material, weighbridge, vehicle",
+      "description": "Uploaded photo URLs",
       "items": {
         "type": "string"
       }
