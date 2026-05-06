@@ -1,6 +1,28 @@
+import { Printer } from "lucide-react";
+
 const LOGO_URL = "https://media.base44.com/images/public/69f7b7e128899b8db1200527/c72ebbf3f_MetalXLogo.png";
 const fmt = (v, fallback = "—") => v || fallback;
 const fmtNum = (v, decimals = 2) => v ? parseFloat(v).toFixed(decimals) : "—";
+
+const PRINT_STYLES = `
+@media print {
+  body * { visibility: hidden !important; }
+  #mx-print-zone, #mx-print-zone * { visibility: visible !important; }
+  #mx-print-zone {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 210mm !important;
+    height: 297mm !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    background: #fff !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  @page { size: A4 portrait; margin: 0; }
+}
+`;
 
 const BLUE = '#1E4D99';
 const BORDER = '#e2e8f0';
@@ -26,8 +48,32 @@ const Checkbox = ({ checked, label, light = false }) => (
 );
 
 export default function ProfessionalPreview({ data = {} }) {
+  const handlePrint = () => {
+    const style = document.createElement('style');
+    style.innerHTML = PRINT_STYLES;
+    document.head.appendChild(style);
+    window.print();
+    setTimeout(() => document.head.removeChild(style), 1000);
+  };
+
   return (
-    <div style={{
+    <div>
+      {/* Print Button */}
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 12 }} className="no-print">
+        <button
+          onClick={handlePrint}
+          style={{
+            display: 'flex', alignItems: 'center', gap: 6,
+            padding: '8px 16px', borderRadius: 8, border: '1px solid #BFDBFE',
+            background: '#EFF6FF', color: '#1E4D99', fontWeight: 700, fontSize: 13,
+            cursor: 'pointer', fontFamily: 'Inter, sans-serif',
+          }}
+        >
+          <Printer size={16} /> Print / Save as PDF
+        </button>
+      </div>
+
+    <div id="mx-print-zone" style={{
       width: '210mm', height: '297mm', margin: '0 auto',
       background: '#f8fafc', fontFamily: 'Inter, Helvetica, Arial, sans-serif',
       fontSize: 10, lineHeight: 1.3, color: '#0D1A2E',
@@ -269,6 +315,7 @@ export default function ProfessionalPreview({ data = {} }) {
         </div>
       </div>
 
+    </div>
     </div>
   );
 }

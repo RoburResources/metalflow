@@ -10,6 +10,7 @@ import Dashboard from "./pages/Dashboard";
 import WeightDocket from "./pages/WeightDocket";
 import Fleet from "./pages/Fleet";
 import AuditTrail from "./pages/AuditTrail";
+import DocketSearch from "./pages/DocketSearch";
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -42,6 +43,7 @@ const AuthenticatedApp = () => {
       <Route path="/docket" element={<WeightDocket />} />
       <Route path="/fleet" element={<Fleet />} />
       <Route path="/audit" element={<AuditTrail />} />
+      <Route path="/search" element={<DocketSearch />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );

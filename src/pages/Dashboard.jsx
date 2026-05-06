@@ -70,6 +70,11 @@ export default function Dashboard() {
                 <Truck className="w-4 h-4" /> Fleet
               </button>
             </Link>
+            <Link to="/search">
+              <button className="text-[#1E4D99] text-xs font-semibold rounded-[10px] h-9 px-3 flex items-center gap-1.5 border border-[#DCE9FA] bg-[#EFF4FF] hover:bg-[#E5EEFB]">
+                <Search className="w-4 h-4" /> Search
+              </button>
+            </Link>
             <Link to="/audit">
               <button className="text-[#1E4D99] text-xs font-semibold rounded-[10px] h-9 px-3 flex items-center gap-1.5 border border-[#DCE9FA] bg-[#EFF4FF] hover:bg-[#E5EEFB]">
                 <ShieldCheck className="w-4 h-4" /> Audit
