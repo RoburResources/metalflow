@@ -12,6 +12,7 @@ import Fleet from "./pages/Fleet";
 import AuditTrail from "./pages/AuditTrail";
 import DocketSearch from "./pages/DocketSearch";
 import Analytics from "./pages/Analytics";
+import DriverDocketUpload from "./pages/DriverDocketUpload";
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -46,6 +47,7 @@ const AuthenticatedApp = () => {
       <Route path="/audit" element={<AuditTrail />} />
       <Route path="/search" element={<DocketSearch />} />
       <Route path="/analytics" element={<Analytics />} />
+      <Route path="/driver" element={<DriverDocketUpload />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
