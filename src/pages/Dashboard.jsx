@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { Search, Plus, FileText, Trash2, Eye, Truck, ShieldCheck, BarChart2, CalendarDays, Users } from "lucide-react";
+import { Search, Plus, FileText, Trash2, Eye, Truck, ShieldCheck, BarChart2, CalendarDays, Users, Menu, X } from "lucide-react";
 import MXLogo from "@/components/docket/MXLogo";
 
 const statusColors = {
@@ -31,6 +31,25 @@ export default function Dashboard() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [dateFilter, setDateFilter] = useState("");
+
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef(null);
+
+  useEffect(() => {
+    const handler = (e) => { if (menuRef.current && !menuRef.current.contains(e.target)) setMenuOpen(false); };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  const navLinks = [
+    { to: '/driver', icon: Truck, label: 'Driver Portal' },
+    { to: '/clients', icon: Users, label: 'Clients' },
+    { to: '/schedules', icon: CalendarDays, label: 'Schedule' },
+    { to: '/fleet', icon: Truck, label: 'Fleet' },
+    { to: '/search', icon: Search, label: 'Search' },
+    { to: '/analytics', icon: BarChart2, label: 'Analytics' },
+    { to: '/audit', icon: ShieldCheck, label: 'Audit' },
+  ];
 
   const { data: dockets = [], isLoading } = useQuery({
     queryKey: ['weight-dockets'],
@@ -65,41 +84,28 @@ export default function Dashboard() {
             <span className="text-[10px] font-bold tracking-[2px] uppercase ml-2 pl-3 border-l border-[#EAEEF5]" style={{ color: 'var(--mx-muted-2)' }}>Operations Dashboard</span>
           </div>
           <div className="flex items-center gap-2">
-            <Link to="/driver">
-              <button className="text-[#1E4D99] text-xs font-semibold rounded-[10px] h-9 px-3 flex items-center gap-1.5 border border-[#DCE9FA] bg-[#EFF4FF] hover:bg-[#E5EEFB]">
-                <Truck className="w-4 h-4" /> Driver Portal
+            {/* Dropdown Menu */}
+            <div className="relative" ref={menuRef}>
+              <button
+                onClick={() => setMenuOpen(o => !o)}
+                className="text-[#1E4D99] text-xs font-semibold rounded-[10px] h-9 px-3 flex items-center gap-1.5 border border-[#DCE9FA] bg-[#EFF4FF] hover:bg-[#E5EEFB]"
+              >
+                {menuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+                <span>Menu</span>
               </button>
-            </Link>
-            <Link to="/clients">
-              <button className="text-[#1E4D99] text-xs font-semibold rounded-[10px] h-9 px-3 flex items-center gap-1.5 border border-[#DCE9FA] bg-[#EFF4FF] hover:bg-[#E5EEFB]">
-                <Users className="w-4 h-4" /> Clients
-              </button>
-            </Link>
-            <Link to="/schedules">
-              <button className="text-[#1E4D99] text-xs font-semibold rounded-[10px] h-9 px-3 flex items-center gap-1.5 border border-[#DCE9FA] bg-[#EFF4FF] hover:bg-[#E5EEFB]">
-                <CalendarDays className="w-4 h-4" /> Schedule
-              </button>
-            </Link>
-            <Link to="/fleet">
-              <button className="text-[#1E4D99] text-xs font-semibold rounded-[10px] h-9 px-3 flex items-center gap-1.5 border border-[#DCE9FA] bg-[#EFF4FF] hover:bg-[#E5EEFB]">
-                <Truck className="w-4 h-4" /> Fleet
-              </button>
-            </Link>
-            <Link to="/search">
-              <button className="text-[#1E4D99] text-xs font-semibold rounded-[10px] h-9 px-3 flex items-center gap-1.5 border border-[#DCE9FA] bg-[#EFF4FF] hover:bg-[#E5EEFB]">
-                <Search className="w-4 h-4" /> Search
-              </button>
-            </Link>
-            <Link to="/analytics">
-              <button className="text-[#1E4D99] text-xs font-semibold rounded-[10px] h-9 px-3 flex items-center gap-1.5 border border-[#DCE9FA] bg-[#EFF4FF] hover:bg-[#E5EEFB]">
-                <BarChart2 className="w-4 h-4" /> Analytics
-              </button>
-            </Link>
-            <Link to="/audit">
-              <button className="text-[#1E4D99] text-xs font-semibold rounded-[10px] h-9 px-3 flex items-center gap-1.5 border border-[#DCE9FA] bg-[#EFF4FF] hover:bg-[#E5EEFB]">
-                <ShieldCheck className="w-4 h-4" /> Audit
-              </button>
-            </Link>
+              {menuOpen && (
+                <div className="absolute right-0 top-full mt-2 w-48 bg-white border border-[#EAEEF5] rounded-[14px] shadow-[0_10px_40px_rgba(11,25,41,0.12)] overflow-hidden z-50">
+                  {navLinks.map(({ to, icon: Icon, label }) => (
+                    <Link key={to} to={to} onClick={() => setMenuOpen(false)}>
+                      <div className="flex items-center gap-2.5 px-4 py-2.5 hover:bg-[#EFF4FF] text-sm font-semibold text-[#1E4D99] border-b border-[#EAEEF5] last:border-b-0">
+                        <Icon className="w-4 h-4 shrink-0" />
+                        {label}
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
             <Link to="/docket">
               <button style={{ background: 'var(--mx-hero-gradient)' }} className="text-white text-sm font-semibold rounded-[10px] h-9 px-4 flex items-center gap-1.5">
                 <Plus className="w-4 h-4" /> New Docket
