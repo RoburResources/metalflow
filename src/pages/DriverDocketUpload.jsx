@@ -10,6 +10,7 @@ import ScheduleLookup from "@/components/driver/ScheduleLookup";
 import AddressSuggest from "@/components/driver/AddressSuggest";
 import AIAssistPanel from "@/components/driver/AIAssistPanel";
 import PhotoAIPanel from "@/components/driver/PhotoAIPanel";
+import DriverDocketPreview from "@/components/driver/DriverDocketPreview";
 
 const mx_input = "bg-white border border-[#EAEEF5] rounded-lg text-sm font-medium focus:ring-2 focus:ring-[#1E4D99] focus:border-[#1E4D99] placeholder:text-[#AAB0C4] uppercase";
 const mx_input_readonly = "bg-[#F4F7FC] border border-[#EAEEF5] rounded-lg text-sm font-semibold text-[#7A8898] px-3 h-9 w-full uppercase";
@@ -169,6 +170,7 @@ export default function DriverDocketUpload() {
   const [scheduleId, setScheduleId] = useState('');
   const [prefilledFields, setPrefilledFields] = useState({});
   const [saved, setSaved] = useState(false);
+  const [savedDocket, setSavedDocket] = useState(null);
   const [photoAIResult, setPhotoAIResult] = useState(null);
 
   const set = (field, val) => setForm(f => ({ ...f, [field]: typeof val === 'string' ? val.toUpperCase() : val }));
@@ -228,7 +230,20 @@ export default function DriverDocketUpload() {
 
   const save = useMutation({
     mutationFn: () => base44.entities.DriverDocket.create({ ...form, schedule_id: scheduleId }),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['driver-dockets'] }); setSaved(true); },
+    onSuccess: async (created) => {
+      qc.invalidateQueries({ queryKey: ['driver-dockets'] });
+      setSavedDocket(created);
+      setSaved(true);
+      // Auto-link: update the Schedule's linked_ticket_no
+      if (scheduleId) {
+        try {
+          const schedules = await base44.entities.Schedule.filter({ job_id: scheduleId });
+          if (schedules?.length > 0) {
+            await base44.entities.Schedule.update(schedules[0].id, { linked_ticket_no: created.ticket_no });
+          }
+        } catch (_) {}
+      }
+    },
   });
 
   const handleNewJob = () => {
@@ -237,6 +252,7 @@ export default function DriverDocketUpload() {
     setScheduleId('');
     setPrefilledFields({});
     setSaved(false);
+    setSavedDocket(null);
     setPhotoAIResult(null);
   };
 
@@ -276,17 +292,28 @@ export default function DriverDocketUpload() {
         </div>
 
         {saved ? (
-          <div className="rounded-[18px] bg-white border border-[#EAEEF5] shadow-[0_10px_40px_rgba(11,25,41,0.10)] p-8 flex flex-col items-center text-center gap-4">
-            <div className="w-16 h-16 rounded-full bg-[#EDFBF3] flex items-center justify-center">
-              <CheckCircle2 className="w-9 h-9 text-[#1B7A45]" />
+          <div className="space-y-5">
+            {/* Success Banner */}
+            <div className="rounded-[18px] bg-white border border-[#EAEEF5] shadow-[0_10px_40px_rgba(11,25,41,0.10)] p-6 flex flex-col items-center text-center gap-3">
+              <div className="w-14 h-14 rounded-full bg-[#EDFBF3] flex items-center justify-center">
+                <CheckCircle2 className="w-8 h-8 text-[#1B7A45]" />
+              </div>
+              <div>
+                <h2 className="text-xl font-black" style={{ color: 'var(--mx-text)' }}>DOCKET SUBMITTED!</h2>
+                <p className="text-sm mt-1" style={{ color: 'var(--mx-muted)' }}>
+                  Your docket has been recorded successfully.
+                  {scheduleId && <span className="block text-[#1B7A45] font-semibold text-xs mt-0.5">✓ Schedule {scheduleId} automatically linked.</span>}
+                </p>
+              </div>
             </div>
-            <div>
-              <h2 className="text-xl font-black" style={{ color: 'var(--mx-text)' }}>DOCKET SUBMITTED!</h2>
-              <p className="text-sm mt-1" style={{ color: 'var(--mx-muted)' }}>Your docket has been recorded successfully.</p>
-            </div>
+
+            {/* Docket Preview + Download */}
+            {savedDocket && <DriverDocketPreview docket={savedDocket} />}
+
+            {/* Next Job Button */}
             <Button onClick={handleNewJob} style={{ background: 'var(--mx-hero-gradient)' }}
-              className="text-white font-semibold rounded-[12px] h-11 px-6 mt-2">
-              Next Job <ChevronRight className="w-4 h-4 ml-1" />
+              className="w-full text-white font-semibold rounded-[12px] h-11">
+              Start Next Job <ChevronRight className="w-4 h-4 ml-1" />
             </Button>
           </div>
         ) : (
