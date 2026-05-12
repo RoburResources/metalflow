@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import ScheduleLookup from "@/components/driver/ScheduleLookup";
 import AddressSuggest from "@/components/driver/AddressSuggest";
 import FromCompanySuggest from "@/components/driver/FromCompanySuggest";
+import ClientNameSuggest from "@/components/driver/ClientNameSuggest";
 import AIAssistPanel from "@/components/driver/AIAssistPanel";
 import PhotoAIPanel from "@/components/driver/PhotoAIPanel";
 import AINotesGenerator from "@/components/driver/AINotesGenerator";
@@ -112,13 +113,13 @@ function OCRScanPanel({ onExtracted }) {
   );
 
   if (status === "uploading" || status === "extracting") return (
-    <div className="w-full flex items-center justify-center gap-4 py-6 rounded-[16px] border border-[#DCE9FA] bg-[#EFF4FF]">
-      <Loader2 className="w-6 h-6 text-[#1E4D99] animate-spin" />
-      <div>
-        <p className="text-sm font-bold text-[#1E4D99]">{status === "uploading" ? "UPLOADING…" : "EXTRACTING WITH AI…"}</p>
-        <p className="text-xs mt-0.5" style={{ color: 'var(--mx-muted)' }}>This only takes a moment</p>
-      </div>
+  <div className="w-full flex items-center justify-center gap-4 py-6 rounded-[16px] border border-[#DCE9FA] bg-[#EFF4FF]">
+    <Loader2 className="w-6 h-6 text-[#1E4D99] animate-spin" />
+    <div>
+      <p className="text-sm font-bold text-[#1E4D99]">{status === "uploading" ? "UPLOADING…" : "PROCESSING DOCUMENT…"}</p>
+      <p className="text-xs mt-0.5" style={{ color: 'var(--mx-muted)' }}>This only takes a moment</p>
     </div>
+  </div>
   );
 
   if (status === "done") return (
@@ -153,7 +154,7 @@ function PhotoAIBanner({ result, onDismiss }) {
       </div>
       <div className="flex-1 min-w-0">
         <p className="text-[10px] font-bold uppercase tracking-widest mb-0.5" style={{ color: result.contamination_detected ? '#92400E' : '#1B7A45' }}>
-          AI PHOTO ANALYSIS
+          PHOTO ANALYSIS
         </p>
         {result.summary && <p className="text-xs font-semibold" style={{ color: 'var(--mx-text)' }}>{result.summary}</p>}
         {result.contamination_detected && <p className="text-xs text-amber-700 mt-0.5">⚠ {result.contamination_detected}</p>}
@@ -245,6 +246,12 @@ export default function DriverDocketUpload() {
     }
     if (extracted.notes_from_document) updates.comments = extracted.notes_from_document.toUpperCase();
     if (extracted.material_grading_from_document) updates.material_grade = extracted.material_grading_from_document.toUpperCase();
+    if (extracted.rego) updates.rego = extracted.rego.toUpperCase();
+    if (extracted.driver_name) updates.driver_name = extracted.driver_name.toUpperCase();
+    if (extracted.customer_name) updates.customer_name = extracted.customer_name.toUpperCase();
+    if (extracted.from_location) updates.from_location = extracted.from_location.toUpperCase();
+    if (extracted.to_location) updates.to_location = extracted.to_location.toUpperCase();
+    if (extracted.goods_weighed) updates.goods_weighed = extracted.goods_weighed.toUpperCase();
     setForm(f => ({ ...f, ...updates }));
   };
 
@@ -401,9 +408,11 @@ export default function DriverDocketUpload() {
                 <FieldRow label="DRIVER NAME" prefilled={prefilledFields.driver_name}>
                   <Input className={mx_input} placeholder="YOUR NAME" value={form.driver_name || ''} onChange={e => set('driver_name', e.target.value)} />
                 </FieldRow>
-                <FieldRow label="CUSTOMER / CLIENT" prefilled={prefilledFields.customer_name}>
-                  <Input className={mx_input} placeholder="CLIENT NAME" value={form.customer_name || ''} onChange={e => set('customer_name', e.target.value)} />
-                </FieldRow>
+                <ClientNameSuggest
+                  value={form.customer_name || ''}
+                  onChange={val => set('customer_name', val)}
+                  prefilled={prefilledFields.customer_name}
+                />
                 <FieldRow label="GOODS / MATERIAL" prefilled={prefilledFields.goods_weighed}>
                   <Input className={mx_input} placeholder="E.G. HEAVY MELT STEEL" value={form.goods_weighed || ''} onChange={e => set('goods_weighed', e.target.value)} />
                 </FieldRow>
