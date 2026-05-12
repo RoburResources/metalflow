@@ -1,9 +1,10 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
 Deno.serve(async (req) => {
+  let payload = {};
   try {
     const base44 = createClientFromRequest(req);
-    const payload = await req.json();
+    payload = await req.json();
 
     const { event, data } = payload;
 
@@ -167,7 +168,6 @@ Deno.serve(async (req) => {
     // Try to log the failure
     try {
       const base44 = createClientFromRequest(req);
-      const payload = await req.json().catch(() => ({}));
       await base44.asServiceRole.entities.AuditLog.create({
         event_type: 'automation_error',
         ticket_no: payload?.data?.ticket_no || null,

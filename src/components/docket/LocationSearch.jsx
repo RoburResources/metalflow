@@ -39,6 +39,11 @@ export default function LocationSearch({ label, value, company, onChangeLocation
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
 
+  // Sync query when external value changes (e.g. loading existing docket)
+  useEffect(() => {
+    setQuery(value || "");
+  }, [value]);
+
   const filtered = query.length > 0
     ? WA_LOCATIONS.filter(l =>
         l.suburb.toLowerCase().includes(query.toLowerCase()) ||

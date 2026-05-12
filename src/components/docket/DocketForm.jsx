@@ -125,8 +125,8 @@ export default function DocketForm({ data, onChange, onPreview, onSave, saving, 
                   <button onClick={() => { const t = genTicket(); set('ticket_no', t); set('docket_no', t); }} className="px-3 py-2 text-xs font-semibold rounded-lg border border-[#EAEEF5] hover:bg-[#EFF4FF] text-[#1E4D99]">↻</button>
                 </div>
               </Field>
-              <Field label="Order Date (Auto)">
-                <Input className={mx_input + ' bg-[#F4F7FC]'} type="date" value={data.order_date || ''} readOnly />
+              <Field label="Order Date">
+                <Input className={mx_input} type="date" value={data.order_date || ''} onChange={e => set('order_date', e.target.value)} />
               </Field>
               <Field label="Bill To — Name">
                 <Input className={mx_input} placeholder="Metal X" value={data.bill_to_name || ''} onChange={e => set('bill_to_name', e.target.value)} />

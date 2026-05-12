@@ -65,6 +65,11 @@ export default function Dashboard() {
             <span className="text-[10px] font-bold tracking-[2px] uppercase ml-2 pl-3 border-l border-[#EAEEF5]" style={{ color: 'var(--mx-muted-2)' }}>Operations Dashboard</span>
           </div>
           <div className="flex items-center gap-2">
+            <Link to="/driver">
+              <button className="text-[#1E4D99] text-xs font-semibold rounded-[10px] h-9 px-3 flex items-center gap-1.5 border border-[#DCE9FA] bg-[#EFF4FF] hover:bg-[#E5EEFB]">
+                <Truck className="w-4 h-4" /> Driver Portal
+              </button>
+            </Link>
             <Link to="/clients">
               <button className="text-[#1E4D99] text-xs font-semibold rounded-[10px] h-9 px-3 flex items-center gap-1.5 border border-[#DCE9FA] bg-[#EFF4FF] hover:bg-[#E5EEFB]">
                 <Users className="w-4 h-4" /> Clients
