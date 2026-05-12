@@ -1,0 +1,107 @@
+{
+  "name": "DriverDocket",
+  "type": "object",
+  "properties": {
+    "ticket_no": {
+      "type": "string",
+      "description": "Auto-generated driver ticket number e.g. DRV-S0005289"
+    },
+    "order_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "schedule_id": {
+      "type": "string",
+      "description": "Linked Schedule job_id"
+    },
+    "bill_to_name": {
+      "type": "string",
+      "default": "METAL X RENEWABLES"
+    },
+    "bill_to_address": {
+      "type": "string",
+      "default": "PO BOX Z5150, ST GEORGES TERRACE 6000"
+    },
+    "rego": {
+      "type": "string"
+    },
+    "driver_name": {
+      "type": "string"
+    },
+    "customer_name": {
+      "type": "string"
+    },
+    "customer_email": {
+      "type": "string"
+    },
+    "from_location": {
+      "type": "string"
+    },
+    "from_company": {
+      "type": "string"
+    },
+    "to_location": {
+      "type": "string"
+    },
+    "to_company": {
+      "type": "string"
+    },
+    "goods_weighed": {
+      "type": "string"
+    },
+    "material_grade": {
+      "type": "string"
+    },
+    "gross_tonnes": {
+      "type": "number"
+    },
+    "gross_datetime": {
+      "type": "string"
+    },
+    "tare_tonnes": {
+      "type": "number"
+    },
+    "tare_datetime": {
+      "type": "string"
+    },
+    "net_tonnes": {
+      "type": "number"
+    },
+    "net_datetime": {
+      "type": "string"
+    },
+    "comments": {
+      "type": "string"
+    },
+    "contamination_notes": {
+      "type": "string",
+      "description": "AI-detected or manually entered contamination observations"
+    },
+    "photo_urls": {
+      "type": "array",
+      "description": "Uploaded photo URLs",
+      "items": {
+        "type": "string"
+      }
+    },
+    "driver_signature": {
+      "type": "string",
+      "description": "Base64 data URI of driver signature"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "Pending",
+        "Verified",
+        "Rejected"
+      ],
+      "default": "Pending"
+    }
+  },
+  "required": [
+    "ticket_no",
+    "rego",
+    "gross_tonnes",
+    "tare_tonnes"
+  ]
+}
