@@ -30,7 +30,7 @@ export default function PhotoAIPanel({ photoUrls, onPhotosChange, onAIResult }) 
 Provide:
 1. is_relevant: true if it shows materials, a weighbridge, or a vehicle load. false otherwise.
 2. material_observed: What material you can see in UPPERCASE (e.g. "HEAVY MELT STEEL", "MIXED METALS") or empty string.
-3. contamination_detected: Any contamination visible (e.g. "PLASTIC CONTAMINATION DETECTED", "OIL RESIDUE") in UPPERCASE, or empty string if clean.
+3. contamination_detected: Any contamination visible in maximum 1-2 sentences in UPPERCASE (e.g. "PLASTIC CONTAMINATION DETECTED", "OIL RESIDUE") or empty string if clean.
 4. quality_issues: Any photo quality issues (e.g. "BLURRY IMAGE", "POOR LIGHTING") in UPPERCASE, or empty string.
 5. summary: One sentence summary in UPPERCASE.`,
           file_urls: newUrls,

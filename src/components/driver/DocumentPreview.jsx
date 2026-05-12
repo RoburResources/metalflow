@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { Download, Share2, X, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import DriverDocketProfessionalPreview from "./DriverDocketProfessionalPreview";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 
@@ -50,90 +51,8 @@ export default function DocumentPreview({ docket, onClose }) {
           </button>
         </div>
 
-        <div
-          ref={contentRef}
-          className="p-8 bg-white"
-          style={{ color: 'var(--mx-text)', fontSize: '14px', lineHeight: '1.5' }}
-        >
-          <div className="text-center mb-6 border-b pb-4">
-            <p className="text-[24px] font-black text-[#1E4D99]">METAL X RENEWABLES</p>
-            <p className="text-xs mt-1">PO BOX Z5150, ST GEORGES TERRACE 6000</p>
-            <p className="text-xs mt-4 font-bold">DRIVER WEIGHBRIDGE DOCKET</p>
-            <p className="text-sm font-black mt-1">{docket.ticket_no}</p>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4 mb-6 text-xs">
-            <div>
-              <p className="font-bold uppercase">Date</p>
-              <p>{docket.order_date}</p>
-            </div>
-            <div>
-              <p className="font-bold uppercase">Vehicle Rego</p>
-              <p>{docket.rego}</p>
-            </div>
-            <div>
-              <p className="font-bold uppercase">Driver</p>
-              <p>{docket.driver_name}</p>
-            </div>
-            <div>
-              <p className="font-bold uppercase">Customer</p>
-              <p>{docket.customer_name}</p>
-            </div>
-          </div>
-
-          <table className="w-full text-xs mb-6 border-t border-b">
-            <tbody>
-              <tr className="border-b">
-                <td className="py-2 font-bold">FROM</td>
-                <td>{docket.from_location} - {docket.from_company}</td>
-              </tr>
-              <tr className="border-b">
-                <td className="py-2 font-bold">TO</td>
-                <td>{docket.to_location} - {docket.to_company}</td>
-              </tr>
-              <tr className="border-b">
-                <td className="py-2 font-bold">MATERIAL</td>
-                <td>{docket.goods_weighed}</td>
-              </tr>
-              <tr className="border-b">
-                <td className="py-2 font-bold">GRADE</td>
-                <td>{docket.material_grade}</td>
-              </tr>
-            </tbody>
-          </table>
-
-          <div className="grid grid-cols-3 gap-4 mb-6 text-xs font-bold">
-            <div className="border p-3 text-center">
-              <p>GROSS</p>
-              <p className="text-xl mt-1">{docket.gross_tonnes}t</p>
-            </div>
-            <div className="border p-3 text-center">
-              <p>TARE</p>
-              <p className="text-xl mt-1">{docket.tare_tonnes}t</p>
-            </div>
-            <div className="border p-3 text-center bg-[#EFF4FF]">
-              <p>NET</p>
-              <p className="text-xl mt-1 text-[#1E4D99]">{docket.net_tonnes}t</p>
-            </div>
-          </div>
-
-          {docket.contamination_notes && (
-            <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded text-xs">
-              <p className="font-bold text-amber-800">CONTAMINATION NOTES</p>
-              <p className="mt-1 text-amber-700">{docket.contamination_notes}</p>
-            </div>
-          )}
-
-          {docket.comments && (
-            <div className="mb-4 p-3 bg-[#EFF4FF] border border-[#DCE9FA] rounded text-xs">
-              <p className="font-bold text-[#1E4D99]">METAL X COMMENTS</p>
-              <p className="mt-1 text-[#1E4D99]">{docket.comments}</p>
-            </div>
-          )}
-
-          <p className="text-center text-[10px] mt-6 pt-6 border-t text-[#7A8898]">
-            Generated on {new Date().toLocaleString('en-AU')}
-          </p>
+        <div ref={contentRef}>
+          <DriverDocketProfessionalPreview docket={docket} />
         </div>
 
         <div className="flex gap-3 p-4 border-t bg-[#F5F7FB]">

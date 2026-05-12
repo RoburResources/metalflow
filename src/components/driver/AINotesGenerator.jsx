@@ -7,22 +7,22 @@ export default function AINotesGenerator({ field, docketData, onGenerate }) {
   const [loading, setLoading] = useState(false);
 
   const prompts = {
-    contamination_notes: `Based on this load data, generate a concise contamination assessment: 
+    contamination_notes: `Based on this load data, generate a contamination assessment in maximum 2 sentences only: 
 Material: ${docketData.goods_weighed}
 Grade: ${docketData.material_grade}
 Pickup from: ${docketData.from_location}
 Delivery to: ${docketData.to_location}
 Net weight: ${docketData.net_tonnes}t
-Identify potential contamination issues and note specific observations. Keep response under 100 words.`,
+IMPORTANT: Your response must be 1-2 sentences maximum. No more.`,
     
-    comments: `Generate professional Metal X comments for this docket based on the following:
+    comments: `Generate professional Metal X comments for this docket in maximum 2 sentences only:
 Material: ${docketData.goods_weighed}
 Grade: ${docketData.material_grade}
 Driver: ${docketData.driver_name}
 Vehicle: ${docketData.rego}
 Route: ${docketData.from_location} → ${docketData.to_location}
 Net weight: ${docketData.net_tonnes}t
-Create brief operational notes suitable for company records. Keep response under 150 words.`
+IMPORTANT: Your response must be 1-2 sentences maximum. No more.`
   };
 
   const handleGenerate = async () => {
