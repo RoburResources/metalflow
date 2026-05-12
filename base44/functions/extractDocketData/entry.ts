@@ -19,42 +19,42 @@ Deno.serve(async (req) => {
             "type": "object",
             "properties": {
                 "gross_tonnes": {
-                    "type": "number",
-                    "description": "Gross weight in tonnes extracted from the document"
+                    "type": ["number", "null"],
+                    "description": "Gross weight in tonnes extracted from the document. Null if not found."
                 },
                 "tare_tonnes": {
-                    "type": "number",
-                    "description": "Tare weight in tonnes extracted from the document"
+                    "type": ["number", "null"],
+                    "description": "Tare weight in tonnes extracted from the document. Null if not found."
                 },
                 "net_tonnes": {
-                    "type": "number",
-                    "description": "Net weight in tonnes extracted from the document"
+                    "type": ["number", "null"],
+                    "description": "Net weight in tonnes extracted from the document. Null if not found."
                 },
                 "notes_from_document": {
-                    "type": "string",
-                    "description": "Any additional notes or comments extracted from the document"
+                    "type": ["string", "null"],
+                    "description": "Any additional notes or comments extracted from the document. Null if not found."
                 },
                 "material_grading_from_document": {
-                    "type": "string",
-                    "description": "Material grade information extracted from the document"
+                    "type": ["string", "null"],
+                    "description": "Material grade or product type extracted from the document. Null if not found."
                 },
                 "raw_document_text": {
-                    "type": "string",
-                    "description": "The full raw text content extracted from the document, for audit purposes"
+                    "type": ["string", "null"],
+                    "description": "The full raw text content extracted from the document, for audit purposes."
                 }
             }
         };
 
-        const ocrResult = await base44.integrations.Core.ExtractDataFromUploadedFile({
-            file_url: file_url,
-            json_schema: jsonSchema
+        const ocrResult = await base44.integrations.Core.InvokeLLM({
+            prompt: `You are an expert at reading weighbridge tickets and delivery dockets. 
+Extract all available data from this document image. 
+Look for gross weight, tare weight, net weight (in tonnes), any notes or comments, and material grade/product type.
+Return null for any field you cannot find or read clearly.`,
+            file_urls: [file_url],
+            response_json_schema: jsonSchema
         });
 
-        if (ocrResult.status === 'success') {
-            return Response.json(ocrResult.output);
-        } else {
-            return Response.json({ error: ocrResult.details || 'OCR extraction failed' }, { status: 500 });
-        }
+        return Response.json(ocrResult);
 
     } catch (error) {
         return Response.json({ error: error.message }, { status: 500 });
