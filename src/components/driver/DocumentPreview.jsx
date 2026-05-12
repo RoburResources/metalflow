@@ -51,13 +51,9 @@ export default function DocumentPreview({ docket, onClose }) {
           </button>
         </div>
 
-        <div ref={contentRef} className="flex-1 overflow-auto flex items-center justify-center p-4" style={{ background: '#f5f5f5' }}>
-          <div className="bg-white shadow-lg" style={{ width: '210mm', aspectRatio: '210/297', maxHeight: '100%' }}>
-            <div className="scale-75 origin-top-left h-full overflow-hidden">
-              <div style={{ transform: 'scale(1.333)' }}>
-                <DriverDocketProfessionalPreview docket={docket} />
-              </div>
-            </div>
+        <div ref={contentRef} className="flex-1 overflow-auto p-4" style={{ background: '#f5f5f5', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div className="bg-white shadow-lg" style={{ width: '100%', maxWidth: '210mm', aspectRatio: '210/297', display: 'flex', flexDirection: 'column' }}>
+            <DriverDocketProfessionalPreview docket={docket} />
           </div>
         </div>
 
