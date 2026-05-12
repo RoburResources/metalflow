@@ -22,11 +22,21 @@ export default function PdfPreviewModal({ docket, onClose }) {
   useEffect(() => {
     const generatePDF = async () => {
       try {
+        // Wait for content to be fully rendered
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
         if (contentRef.current) {
-          const canvas = await html2canvas(contentRef.current, { scale: 2 });
+          const canvas = await html2canvas(contentRef.current, {
+            scale: 2,
+            useCORS: true,
+            allowTaint: true,
+            backgroundColor: '#FFFFFF'
+          });
           const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
           const imgData = canvas.toDataURL('image/png');
-          pdf.addImage(imgData, 'PNG', 10, 10, 190, 277);
+          const imgWidth = 210 - 20; // A4 width minus margins
+          const imgHeight = (canvas.height * imgWidth) / canvas.width;
+          pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
           const pdfBlob = pdf.output('blob');
           const url = URL.createObjectURL(pdfBlob);
           setPdfUrl(url);
@@ -212,8 +222,9 @@ export default function PdfPreviewModal({ docket, onClose }) {
           </div>
         </div>
 
-        {/* Hidden rendering element */}
-        <div style={{ position: 'absolute', left: '-9999px', width: '210mm', aspectRatio: '210/297' }}>
+        {/* Hidden rendering element for html2canvas */}
+        <div ref={contentRef} style={{ position: 'absolute', left: '-9999px', width: '210mm', padding: '20mm', backgroundColor: '#FFFFFF' }}>
+          <DriverDocketProfessionalPreview docket={docket} />
         </div>
       </div>
     </div>
