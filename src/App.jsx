@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
+import ErrorBoundary from '@/components/ErrorBoundary';
 // Add page imports here
 import Dashboard from "./pages/Dashboard";
 import WeightDocket from "./pages/WeightDocket";
@@ -42,7 +43,8 @@ const AuthenticatedApp = () => {
 
   // Render the main app
   return (
-    <Routes>
+    <ErrorBoundary>
+      <Routes>
       {/* Add your page Route elements here */}
       <Route path="/" element={<Dashboard />} />
       <Route path="/docket" element={<WeightDocket />} />
@@ -54,8 +56,9 @@ const AuthenticatedApp = () => {
       <Route path="/driver" element={<DriverDocketUpload />} />
       <Route path="/schedules" element={<Schedules />} />
       <Route path="/clients" element={<Clients />} />
-      <Route path="*" element={<PageNotFound />} />
-    </Routes>
+        <Route path="*" element={<PageNotFound />} />
+      </Routes>
+    </ErrorBoundary>
   );
 };
 
