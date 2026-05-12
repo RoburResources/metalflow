@@ -26,8 +26,13 @@ export default function AddressSuggest({ label, value, onChange, placeholder, pr
     debounceRef.current = setTimeout(async () => {
       setLoading(true);
       try {
+        const prompt = label?.includes('LOCATION') || label?.includes('ADDRESS')
+          ? `Suggest 5 real Western Australian addresses or location names that match "${upper}". Return only a JSON array of strings, each being a complete address in UPPERCASE. No explanation.`
+          : `Suggest 5 company names or business entities in Western Australia that match "${upper}". Return only a JSON array of strings, each in UPPERCASE. No explanation.`;
+        
         const res = await base44.integrations.Core.InvokeLLM({
-          prompt: `Suggest 5 real Australian addresses or location names that match "${upper}". Return only a JSON array of strings, each being a complete address in UPPERCASE. No explanation.`,
+          prompt,
+          add_context_from_internet: true,
           response_json_schema: {
             type: "object",
             properties: { suggestions: { type: "array", items: { type: "string" } } }

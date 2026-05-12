@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Loader2, CheckCircle2, Save, ChevronRight, Truck, Sparkles } from "lucide-react";
+import { Loader2, CheckCircle2, Save, ChevronRight, Truck, Sparkles, Eye, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,6 +10,10 @@ import ScheduleLookup from "@/components/driver/ScheduleLookup";
 import AddressSuggest from "@/components/driver/AddressSuggest";
 import AIAssistPanel from "@/components/driver/AIAssistPanel";
 import PhotoAIPanel from "@/components/driver/PhotoAIPanel";
+import AINotesGenerator from "@/components/driver/AINotesGenerator";
+import DocumentPreview from "@/components/driver/DocumentPreview";
+import { getGPSLocation, formatLocationStamp } from "@/lib/gps-tracking";
+import { saveDocketOffline, getPendingDockets } from "@/lib/offline-storage";
 
 const mx_input = "bg-white border border-[#EAEEF5] rounded-lg text-sm font-medium focus:ring-2 focus:ring-[#1E4D99] focus:border-[#1E4D99] placeholder:text-[#AAB0C4] uppercase";
 const mx_input_readonly = "bg-[#F4F7FC] border border-[#EAEEF5] rounded-lg text-sm font-semibold text-[#7A8898] px-3 h-9 w-full uppercase";
@@ -26,11 +30,12 @@ const DEFAULTS = {
   bill_to_name: 'METAL X RENEWABLES',
   bill_to_address: 'PO BOX Z5150, ST GEORGES TERRACE 6000',
   rego: '', driver_name: '', customer_name: '', customer_email: '',
-  from_location: '', from_company: '', to_location: '', to_company: '',
+  from_location: '', from_company: '', to_location: 'METAL X RENEWABLES', to_company: 'METAL X RENEWABLES',
   goods_weighed: '', material_grade: '', comments: '', contamination_notes: '',
   gross_tonnes: '', gross_datetime: '', tare_tonnes: '', tare_datetime: '',
   net_tonnes: '', net_datetime: '', photo_urls: [], driver_signature: '',
   status: 'Pending', schedule_id: '',
+  gps_location_submission: '', gps_location_gross: '', gps_location_tare: '',
 };
 
 function FieldRow({ label, children, prefilled }) {
@@ -170,25 +175,57 @@ export default function DriverDocketUpload() {
   const [prefilledFields, setPrefilledFields] = useState({});
   const [saved, setSaved] = useState(false);
   const [photoAIResult, setPhotoAIResult] = useState(null);
+  const [showPreview, setShowPreview] = useState(false);
+  const [pendingDockets, setPendingDockets] = useState([]);
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
 
   const set = (field, val) => setForm(f => ({ ...f, [field]: typeof val === 'string' ? val.toUpperCase() : val }));
   const setMany = (updates) => setForm(f => ({ ...f, ...Object.fromEntries(Object.entries(updates).map(([k, v]) => [k, typeof v === 'string' ? v.toUpperCase() : v])) }));
+
+  // GPS tracking and offline sync
+  useEffect(() => {
+    window.addEventListener('online', () => setIsOnline(true));
+    window.addEventListener('offline', () => setIsOnline(false));
+    return () => {
+      window.removeEventListener('online', () => setIsOnline(true));
+      window.removeEventListener('offline', () => setIsOnline(false));
+    };
+  }, []);
+
+  useEffect(() => {
+    getPendingDockets().then(setPendingDockets);
+  }, []);
+
+  const captureGPSLocation = async () => {
+    try {
+      const loc = await getGPSLocation();
+      return formatLocationStamp(loc.latitude, loc.longitude, loc.accuracy);
+    } catch {
+      return '';
+    }
+  };
 
   const computeNet = (gross, tare) => {
     const g = parseFloat(gross) || 0, t = parseFloat(tare) || 0;
     return g > 0 && t > 0 ? Math.max(0, g - t) : '';
   };
 
-  const handleWeightChange = (field, value) => {
+  const handleWeightChange = async (field, value) => {
     const now = nowStr();
     const updates = { [field]: value };
+    
+    // Capture GPS location for weight readings
+    const gpsLoc = await captureGPSLocation();
+    
     if (field === 'gross_tonnes') {
       updates.gross_datetime = now;
+      if (gpsLoc) updates.gps_location_gross = gpsLoc;
       const net = computeNet(value, form.tare_tonnes);
       updates.net_tonnes = net; if (net) updates.net_datetime = now;
     }
     if (field === 'tare_tonnes') {
       updates.tare_datetime = now;
+      if (gpsLoc) updates.gps_location_tare = gpsLoc;
       const net = computeNet(form.gross_tonnes, value);
       updates.net_tonnes = net; if (net) updates.net_datetime = now;
     }
@@ -227,7 +264,22 @@ export default function DriverDocketUpload() {
   const handleAIUpdate = (updates) => setMany(updates);
 
   const save = useMutation({
-    mutationFn: () => base44.entities.DriverDocket.create({ ...form, schedule_id: scheduleId }),
+    mutationFn: async () => {
+      const gpsLoc = await captureGPSLocation();
+      const docketData = { ...form, schedule_id: scheduleId };
+      if (gpsLoc) docketData.gps_location_submission = gpsLoc;
+      
+      // Try to save online first, fallback to offline storage
+      try {
+        return await base44.entities.DriverDocket.create(docketData);
+      } catch (error) {
+        if (!isOnline) {
+          await saveDocketOffline(docketData);
+          return docketData;
+        }
+        throw error;
+      }
+    },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ['driver-dockets'] }); setSaved(true); },
   });
 
@@ -399,31 +451,64 @@ export default function DriverDocketUpload() {
                   <Input className={mx_input} placeholder="E.G. HEAVY MELT STEEL" value={form.material_grade || ''} onChange={e => set('material_grade', e.target.value)} />
                 </FieldRow>
                 <FieldRow label="CONTAMINATION NOTES">
-                  <textarea rows={2} className="w-full bg-white border border-[#EAEEF5] rounded-lg text-sm font-medium p-3 focus:ring-2 focus:ring-[#1E4D99] outline-none resize-none uppercase placeholder:text-[#AAB0C4] placeholder:normal-case"
-                    placeholder="Any contamination observations…"
-                    value={form.contamination_notes || ''}
-                    onChange={e => set('contamination_notes', e.target.value)} />
+                  <div className="flex gap-2 items-start">
+                    <textarea rows={2} className="w-full bg-white border border-[#EAEEF5] rounded-lg text-sm font-medium p-3 focus:ring-2 focus:ring-[#1E4D99] outline-none resize-none uppercase placeholder:text-[#AAB0C4] placeholder:normal-case"
+                      placeholder="Any contamination observations…"
+                      value={form.contamination_notes || ''}
+                      onChange={e => set('contamination_notes', e.target.value)} />
+                    <AINotesGenerator
+                      field="contamination_notes"
+                      docketData={form}
+                      onGenerate={(field, content) => set(field, content)}
+                    />
+                  </div>
                 </FieldRow>
-                <FieldRow label="DRIVER COMMENTS">
-                  <textarea rows={3} className="w-full bg-white border border-[#EAEEF5] rounded-lg text-sm font-medium p-3 focus:ring-2 focus:ring-[#1E4D99] outline-none resize-none uppercase placeholder:text-[#AAB0C4] placeholder:normal-case"
-                    placeholder="Any notes about this load…"
-                    value={form.comments || ''}
-                    onChange={e => set('comments', e.target.value)} />
+                <FieldRow label="METAL X COMMENTS">
+                  <div className="flex gap-2 items-start">
+                    <textarea rows={3} className="w-full bg-white border border-[#EAEEF5] rounded-lg text-sm font-medium p-3 focus:ring-2 focus:ring-[#1E4D99] outline-none resize-none uppercase placeholder:text-[#AAB0C4] placeholder:normal-case"
+                      placeholder="Any notes about this load…"
+                      value={form.comments || ''}
+                      onChange={e => set('comments', e.target.value)} />
+                    <AINotesGenerator
+                      field="comments"
+                      docketData={form}
+                      onGenerate={(field, content) => set(field, content)}
+                    />
+                  </div>
                 </FieldRow>
               </div>
             </div>
 
-            {/* ── Submit ── */}
-            <Button
-              onClick={() => save.mutate()}
-              disabled={!isReady || save.isPending}
-              style={{ background: isReady ? 'var(--mx-hero-gradient)' : undefined }}
-              className="w-full h-14 text-base font-black rounded-[14px] text-white"
-            >
-              {save.isPending
-                ? <><Loader2 className="w-5 h-5 mr-2 animate-spin" />SUBMITTING…</>
-                : <><Save className="w-5 h-5 mr-2" />SUBMIT DOCKET</>}
-            </Button>
+            {/* ── Document Preview & Submit ── */}
+             <div className="flex gap-3">
+              <Button
+                onClick={() => setShowPreview(true)}
+                disabled={!isReady}
+                variant="outline"
+                className="flex-1 h-14 text-base font-black rounded-[14px]"
+              >
+                <Eye className="w-5 h-5 mr-2" />
+                PREVIEW
+              </Button>
+              <Button
+                onClick={() => save.mutate()}
+                disabled={!isReady || save.isPending}
+                style={{ background: isReady ? 'var(--mx-hero-gradient)' : undefined }}
+                className="flex-1 h-14 text-base font-black rounded-[14px] text-white"
+              >
+                {save.isPending
+                  ? <><Loader2 className="w-5 h-5 mr-2 animate-spin" />SUBMITTING…</>
+                  : <><Save className="w-5 h-5 mr-2" />SUBMIT</>}
+              </Button>
+            </div>
+
+            {!isOnline && (
+              <div className="rounded-[14px] bg-amber-50 border border-amber-200 p-3">
+                <p className="text-xs font-bold text-amber-800">⚠ OFFLINE MODE</p>
+                <p className="text-xs text-amber-700 mt-0.5">Dockets will sync when connection is restored</p>
+              </div>
+            )}
+
             {!isReady && (
               <p className="text-center text-xs pb-8" style={{ color: 'var(--mx-muted-2)' }}>
                 * GROSS WEIGHT, TARE WEIGHT AND VEHICLE REGO ARE REQUIRED
@@ -431,6 +516,8 @@ export default function DriverDocketUpload() {
             )}
           </>
         )}
+        
+        {showPreview && <DocumentPreview docket={form} onClose={() => setShowPreview(false)} />}
       </main>
     </div>
   );
