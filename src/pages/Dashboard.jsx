@@ -31,6 +31,7 @@ export default function Dashboard() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [dateFilter, setDateFilter] = useState("");
+  const [docketsList, setDocketsList] = useState([]);
 
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
@@ -56,12 +57,33 @@ export default function Dashboard() {
     queryFn: () => base44.entities.WeightDocket.list('-created_date', 200),
   });
 
+  // Real-time subscription to sync dockets
+  useEffect(() => {
+    setDocketsList(dockets);
+    const unsubscribe = base44.entities.WeightDocket.subscribe((event) => {
+      setDocketsList(prev => {
+        if (event.type === 'create') {
+          return [event.data, ...prev];
+        } else if (event.type === 'update') {
+          return prev.map(d => d.id === event.id ? event.data : d);
+        } else if (event.type === 'delete') {
+          return prev.filter(d => d.id !== event.id);
+        }
+        return prev;
+      });
+    });
+    return unsubscribe;
+  }, [dockets]);
+
   const del = useMutation({
     mutationFn: (id) => base44.entities.WeightDocket.delete(id),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['weight-dockets'] }),
+    onSuccess: (_, id) => {
+      setDocketsList(prev => prev.filter(d => d.id !== id));
+      qc.invalidateQueries({ queryKey: ['weight-dockets'] });
+    },
   });
 
-  const filtered = dockets.filter(d => {
+  const filtered = docketsList.filter(d => {
     const q = search.toLowerCase();
     const matchSearch = !q || [d.ticket_no, d.rego, d.driver_name, d.from_location, d.to_location, d.bill_to_name, d.customer_name]
       .filter(Boolean).some(v => v.toLowerCase().includes(q));
@@ -70,9 +92,9 @@ export default function Dashboard() {
     return matchSearch && matchStatus && matchDate;
   });
 
-  const totalNet = dockets.reduce((s, d) => s + (parseFloat(d.net_tonnes) || 0), 0);
-  const verified = dockets.filter(d => d.status === 'Verified').length;
-  const today = dockets.filter(d => (d.order_date || '') === new Date().toISOString().slice(0, 10)).length;
+  const totalNet = docketsList.reduce((s, d) => s + (parseFloat(d.net_tonnes) || 0), 0);
+  const verified = docketsList.filter(d => d.status === 'Verified').length;
+  const today = docketsList.filter(d => (d.order_date || '') === new Date().toISOString().slice(0, 10)).length;
 
   return (
     <div className="min-h-screen" style={{ background: 'var(--mx-paper)' }}>
@@ -125,7 +147,7 @@ export default function Dashboard() {
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 border-t border-white/10">
             {[
-              { label: 'Total Dockets', value: dockets.length, sub: 'All time' },
+              { label: 'Total Dockets', value: docketsList.length, sub: 'All time' },
               { label: 'Today', value: today, sub: 'Dockets today' },
               { label: 'Total Net (t)', value: totalNet.toFixed(2), sub: 'Tonnes weighed' },
               { label: 'Verified', value: verified, sub: 'Completed' },
@@ -191,7 +213,7 @@ export default function Dashboard() {
           ) : filtered.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-40 gap-3">
               <FileText className="w-8 h-8" style={{ color: 'var(--mx-muted-2)' }} />
-              <p className="text-sm" style={{ color: 'var(--mx-muted)' }}>{dockets.length === 0 ? 'No dockets yet.' : 'No results match your filters.'}</p>
+              <p className="text-sm" style={{ color: 'var(--mx-muted)' }}>{docketsList.length === 0 ? 'No dockets yet.' : 'No results match your filters.'}</p>
             </div>
           ) : filtered.map(d => (
             <div key={d.id} className="grid grid-cols-1 md:grid-cols-[1.4fr_1fr_0.9fr_0.9fr_0.9fr_0.8fr_0.8fr_auto] gap-0 border-b border-[#EAEEF5] last:border-b-0 hover:bg-[#F4F7FC] transition-colors">
@@ -231,7 +253,7 @@ export default function Dashboard() {
 
         {filtered.length > 0 && (
           <p className="text-[10px] mt-3 text-right" style={{ color: 'var(--mx-muted-2)' }}>
-            Showing {filtered.length} of {dockets.length} records
+            Showing {filtered.length} of {docketsList.length} records
           </p>
         )}
       </main>

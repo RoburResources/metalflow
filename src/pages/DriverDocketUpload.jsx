@@ -294,6 +294,20 @@ export default function DriverDocketUpload() {
   };
 
   const isReady = form.gross_tonnes && form.tare_tonnes && form.rego;
+  const [validationErrors, setValidationErrors] = useState([]);
+
+  const validateForm = () => {
+    const errors = [];
+    if (!form.rego) errors.push('Vehicle Rego is required');
+    if (!form.driver_name) errors.push('Driver Name is required');
+    if (!form.gross_tonnes || isNaN(parseFloat(form.gross_tonnes))) errors.push('Valid Gross Weight is required');
+    if (!form.tare_tonnes || isNaN(parseFloat(form.tare_tonnes))) errors.push('Valid Tare Weight is required');
+    if (!form.customer_name) errors.push('Customer/Client is required');
+    if (!form.from_location) errors.push('From Location is required');
+    if (!form.goods_weighed) errors.push('Goods/Material is required');
+    setValidationErrors(errors);
+    return errors.length === 0;
+  };
 
   return (
     <div className="min-h-screen" style={{ background: 'var(--mx-paper)' }}>
@@ -486,7 +500,18 @@ export default function DriverDocketUpload() {
             </div>
 
             {/* ── Document Preview & Submit ── */}
-             <div className="flex gap-3">
+             {validationErrors.length > 0 && (
+              <div className="rounded-[14px] bg-red-50 border border-red-200 p-4">
+                <p className="text-xs font-bold text-red-700 mb-2">⚠ PLEASE FIX THESE ERRORS:</p>
+                <ul className="space-y-1">
+                  {validationErrors.map((err, i) => (
+                    <li key={i} className="text-xs text-red-600">• {err}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            <div className="flex gap-3">
               <Button
                 onClick={() => setShowPreview(true)}
                 variant="outline"
@@ -496,7 +521,13 @@ export default function DriverDocketUpload() {
                 PREVIEW
               </Button>
               <Button
-                onClick={() => save.mutate()}
+                onClick={() => {
+                if (validateForm()) {
+                  save.mutate();
+                } else {
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+              }}
                 disabled={!isReady || save.isPending}
                 style={{ background: isReady ? 'var(--mx-hero-gradient)' : undefined }}
                 className="flex-1 h-14 text-base font-black rounded-[14px] text-white"
