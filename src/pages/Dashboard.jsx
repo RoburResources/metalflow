@@ -2,7 +2,7 @@ import { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { Search, Plus, FileText, Trash2, Eye, Truck, ShieldCheck } from "lucide-react";
+import { Search, Plus, FileText, Trash2, Eye, Truck, ShieldCheck, BarChart2 } from "lucide-react";
 import MXLogo from "@/components/docket/MXLogo";
 
 const statusColors = {
@@ -73,6 +73,11 @@ export default function Dashboard() {
             <Link to="/search">
               <button className="text-[#1E4D99] text-xs font-semibold rounded-[10px] h-9 px-3 flex items-center gap-1.5 border border-[#DCE9FA] bg-[#EFF4FF] hover:bg-[#E5EEFB]">
                 <Search className="w-4 h-4" /> Search
+              </button>
+            </Link>
+            <Link to="/analytics">
+              <button className="text-[#1E4D99] text-xs font-semibold rounded-[10px] h-9 px-3 flex items-center gap-1.5 border border-[#DCE9FA] bg-[#EFF4FF] hover:bg-[#E5EEFB]">
+                <BarChart2 className="w-4 h-4" /> Analytics
               </button>
             </Link>
             <Link to="/audit">
