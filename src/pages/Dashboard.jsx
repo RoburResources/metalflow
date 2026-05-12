@@ -2,7 +2,7 @@ import { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { Search, Plus, FileText, Trash2, Eye, Truck, ShieldCheck, BarChart2 } from "lucide-react";
+import { Search, Plus, FileText, Trash2, Eye, Truck, ShieldCheck, BarChart2, CalendarDays, Users } from "lucide-react";
 import MXLogo from "@/components/docket/MXLogo";
 
 const statusColors = {
@@ -65,6 +65,16 @@ export default function Dashboard() {
             <span className="text-[10px] font-bold tracking-[2px] uppercase ml-2 pl-3 border-l border-[#EAEEF5]" style={{ color: 'var(--mx-muted-2)' }}>Operations Dashboard</span>
           </div>
           <div className="flex items-center gap-2">
+            <Link to="/clients">
+              <button className="text-[#1E4D99] text-xs font-semibold rounded-[10px] h-9 px-3 flex items-center gap-1.5 border border-[#DCE9FA] bg-[#EFF4FF] hover:bg-[#E5EEFB]">
+                <Users className="w-4 h-4" /> Clients
+              </button>
+            </Link>
+            <Link to="/schedules">
+              <button className="text-[#1E4D99] text-xs font-semibold rounded-[10px] h-9 px-3 flex items-center gap-1.5 border border-[#DCE9FA] bg-[#EFF4FF] hover:bg-[#E5EEFB]">
+                <CalendarDays className="w-4 h-4" /> Schedule
+              </button>
+            </Link>
             <Link to="/fleet">
               <button className="text-[#1E4D99] text-xs font-semibold rounded-[10px] h-9 px-3 flex items-center gap-1.5 border border-[#DCE9FA] bg-[#EFF4FF] hover:bg-[#E5EEFB]">
                 <Truck className="w-4 h-4" /> Fleet
