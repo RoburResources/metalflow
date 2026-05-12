@@ -10,6 +10,7 @@ import PhotoUpload from "./PhotoUpload";
 import MaterialGradeSelector from "./MaterialGradeSelector";
 import LocationSearch from "./LocationSearch";
 import AIComments from "./AIComments";
+import OCRUpload from "./OCRUpload";
 
 const Section = ({ title, eyebrow, children }) => (
   <div className="mb-8">
@@ -197,6 +198,17 @@ export default function DocketForm({ data, onChange, onPreview, onSave, saving, 
 
         {/* STEP 1: Weights */}
         {step === 1 && (
+          <>
+          <OCRUpload onExtracted={(extracted) => {
+            const now = nowStr();
+            const updates = {};
+            if (extracted.gross_tonnes) { updates.gross_tonnes = extracted.gross_tonnes; updates.gross_datetime = now; }
+            if (extracted.tare_tonnes) { updates.tare_tonnes = extracted.tare_tonnes; updates.tare_datetime = now; }
+            if (extracted.net_tonnes) { updates.net_tonnes = extracted.net_tonnes; updates.net_datetime = now; }
+            if (extracted.notes_from_document) updates.comments = extracted.notes_from_document;
+            if (extracted.material_grading_from_document) updates.material_grade = extracted.material_grading_from_document;
+            onChange({ ...data, ...updates });
+          }} />
           <Section title="Weight Readings" eyebrow="Weighbridge Data — Date/Time Auto-Captured">
             <Field label="Gross (Tonnes)">
               <Input className={mx_input} type="number" step="0.01" placeholder="7.62" value={data.gross_tonnes || ''} onChange={e => handleWeightChange('gross_tonnes', e.target.value)} />
@@ -217,6 +229,7 @@ export default function DocketForm({ data, onChange, onPreview, onSave, saving, 
               <Input className={mx_input + ' bg-[#F4F7FC]'} value={data.net_datetime || ''} readOnly placeholder="Auto-calculated" />
             </Field>
           </Section>
+          </>
         )}
 
         {/* STEP 2: Grading */}
