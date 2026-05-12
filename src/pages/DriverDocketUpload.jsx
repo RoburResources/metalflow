@@ -84,7 +84,8 @@ function OCRScanPanel({ onExtracted }) {
     try {
       // Preprocess document image for better OCR accuracy
       const processedBlob = await preprocessDocumentImage(file);
-      const { file_url } = await base44.integrations.Core.UploadFile({ file: processedBlob });
+      const processedFile = new File([processedBlob], file.name, { type: 'image/jpeg' });
+      const { file_url } = await base44.integrations.Core.UploadFile({ file: processedFile });
       setStatus("extracting");
       const response = await base44.functions.invoke("extractDocketData", { file_url });
       const extracted = response.data;
@@ -97,6 +98,7 @@ function OCRScanPanel({ onExtracted }) {
       setStatus("done");
       setTimeout(() => setStatus("idle"), 4000);
     } catch (err) {
+      console.error('OCR error:', err);
       setErrorMsg(err.message || "Could not process document. Ensure good lighting and clear document.");
       setStatus("error");
     }
