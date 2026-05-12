@@ -5,6 +5,7 @@ import { Loader2, CheckCircle2, Save, ChevronRight, Truck, Sparkles, Eye, MapPin
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { preprocessDocumentImage } from "@/lib/document-scanner";
 
 import ScheduleLookup from "@/components/driver/ScheduleLookup";
 import AddressSuggest from "@/components/driver/AddressSuggest";
@@ -81,16 +82,22 @@ function OCRScanPanel({ onExtracted }) {
     setStatus("uploading");
     setErrorMsg("");
     try {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      // Preprocess document image for better OCR accuracy
+      const processedBlob = await preprocessDocumentImage(file);
+      const { file_url } = await base44.integrations.Core.UploadFile({ file: processedBlob });
       setStatus("extracting");
       const response = await base44.functions.invoke("extractDocketData", { file_url });
       const extracted = response.data;
-      if (extracted.error) { setErrorMsg(extracted.error); setStatus("error"); return; }
+      if (extracted.error) {
+        setErrorMsg(extracted.error || "Unable to read ticket. Please ensure the document is clear and well-lit.");
+        setStatus("error");
+        return;
+      }
       onExtracted(extracted);
       setStatus("done");
       setTimeout(() => setStatus("idle"), 4000);
     } catch (err) {
-      setErrorMsg(err.message || "EXTRACTION FAILED");
+      setErrorMsg(err.message || "Could not process document. Ensure good lighting and clear document.");
       setStatus("error");
     }
   };
