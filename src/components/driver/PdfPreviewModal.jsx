@@ -213,10 +213,7 @@ export default function PdfPreviewModal({ docket, onClose }) {
         </div>
 
         {/* Hidden rendering element */}
-        <div className="hidden">
-          <div ref={contentRef} className="bg-white" style={{ width: '210mm', aspectRatio: '210/297' }}>
-            <DriverDocketProfessionalPreview docket={docket} />
-          </div>
+        <div style={{ position: 'absolute', left: '-9999px', width: '210mm', aspectRatio: '210/297' }}>
         </div>
       </div>
     </div>
