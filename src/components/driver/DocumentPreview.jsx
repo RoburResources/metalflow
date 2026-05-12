@@ -42,17 +42,23 @@ export default function DocumentPreview({ docket, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-start justify-center p-4 overflow-y-auto pt-8">
-      <div className="bg-white rounded-lg max-w-2xl w-full">
-        <div className="sticky top-0 flex justify-between items-center p-4 border-b bg-white z-10">
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-lg w-full flex flex-col max-h-[95vh]">
+        <div className="flex justify-between items-center p-4 border-b bg-white">
           <h3 className="font-bold text-[#1E4D99]">DOCKET PREVIEW</h3>
           <button onClick={onClose} className="text-[#7A8898] hover:text-[#0D1A2E]">
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        <div ref={contentRef}>
-          <DriverDocketProfessionalPreview docket={docket} />
+        <div ref={contentRef} className="flex-1 overflow-auto flex items-center justify-center p-4" style={{ background: '#f5f5f5' }}>
+          <div className="bg-white shadow-lg" style={{ width: '210mm', aspectRatio: '210/297', maxHeight: '100%' }}>
+            <div className="scale-75 origin-top-left h-full overflow-hidden">
+              <div style={{ transform: 'scale(1.333)' }}>
+                <DriverDocketProfessionalPreview docket={docket} />
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="flex gap-3 p-4 border-t bg-[#F5F7FB]">
