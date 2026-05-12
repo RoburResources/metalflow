@@ -42,20 +42,20 @@ export default function DocumentPreview({ docket, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 overflow-y-auto">
-      <div className="bg-white rounded-lg max-w-2xl w-full my-8">
-        <div className="sticky top-0 flex justify-between items-center p-4 border-b bg-white rounded-t-lg">
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-lg max-w-2xl w-full flex flex-col max-h-[90vh]">
+        <div className="sticky top-0 flex justify-between items-center p-4 border-b bg-white rounded-t-lg z-10">
           <h3 className="font-bold text-[#1E4D99]">DOCKET PREVIEW</h3>
           <button onClick={onClose} className="text-[#7A8898] hover:text-[#0D1A2E]">
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        <div ref={contentRef}>
+        <div ref={contentRef} className="overflow-y-auto flex-1">
           <DriverDocketProfessionalPreview docket={docket} />
         </div>
 
-        <div className="flex gap-3 p-4 border-t bg-[#F5F7FB]">
+        <div className="flex gap-3 p-4 border-t bg-[#F5F7FB] sticky bottom-0">
           <Button
             onClick={handleShare}
             variant="outline"
