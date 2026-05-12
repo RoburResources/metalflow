@@ -11,7 +11,7 @@ import AddressSuggest from "@/components/driver/AddressSuggest";
 import AIAssistPanel from "@/components/driver/AIAssistPanel";
 import PhotoAIPanel from "@/components/driver/PhotoAIPanel";
 import AINotesGenerator from "@/components/driver/AINotesGenerator";
-import DocumentPreview from "@/components/driver/DocumentPreview";
+import PdfPreviewModal from "@/components/driver/PdfPreviewModal";
 import { getGPSLocation, formatLocationStamp } from "@/lib/gps-tracking";
 import { saveDocketOffline, getPendingDockets } from "@/lib/offline-storage";
 
@@ -516,7 +516,7 @@ export default function DriverDocketUpload() {
           </>
         )}
         
-        {showPreview && <DocumentPreview docket={form} onClose={() => setShowPreview(false)} />}
+        {showPreview && <PdfPreviewModal docket={form} onClose={() => setShowPreview(false)} />}
       </main>
     </div>
   );
