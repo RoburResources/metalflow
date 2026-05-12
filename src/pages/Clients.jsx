@@ -205,7 +205,7 @@ export default function Clients() {
       </main>
 
       <Dialog open={open} onOpenChange={v => { setOpen(v); if (!v) setEditing(null); }}>
-        <DialogContent className="max-w-xl rounded-[18px] border-[#EAEEF5]">
+        <DialogContent className="max-w-xl rounded-[18px] border-[#EAEEF5] max-h-[92vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-base font-black text-[#0D1A2E]">
               {editing ? "Edit Client" : "New Client"}

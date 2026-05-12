@@ -257,7 +257,7 @@ export default function DriverDocketUpload() {
         </div>
       </nav>
 
-      <main className="max-w-xl mx-auto px-5 py-8 space-y-6">
+      <main className="max-w-xl mx-auto px-5 py-8 pb-16 space-y-6">
 
         {/* Job Header */}
         <div className="rounded-[18px] overflow-hidden" style={{ background: 'var(--mx-hero-gradient)' }}>

@@ -205,7 +205,7 @@ export default function DocketSearch() {
             <h1 className="text-xl font-black text-white mt-1">Docket Search & History</h1>
             <p className="text-sm text-[#90C4F9] mt-1">Search, filter and bulk-export weighbridge records</p>
           </div>
-          <div className="grid grid-cols-4 border-t border-white/10">
+          <div className="grid grid-cols-2 sm:grid-cols-4 border-t border-white/10">
             {[
               { label: 'Total Records', value: dockets.length },
               { label: 'Verified', value: dockets.filter(d => d.status === 'Verified').length },

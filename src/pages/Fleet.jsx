@@ -222,7 +222,7 @@ export default function Fleet() {
             <h1 className="text-2xl font-900 text-white mt-1" style={{ fontWeight: 900 }}>Vehicle Usage & Maintenance</h1>
             <p className="text-sm text-[#90C4F9] mt-1">Aggregated tonnage, activity heatmaps, and maintenance alerts per registration</p>
           </div>
-          <div className="grid grid-cols-3 border-t border-white/10">
+          <div className="grid grid-cols-1 sm:grid-cols-3 border-t border-white/10">
             {[
               { label: 'Registered Vehicles', value: vehicles.length },
               { label: 'Total Fleet Net (t)', value: totalFleetNet.toFixed(1) },

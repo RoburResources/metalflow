@@ -136,7 +136,7 @@ export default function Analytics() {
         </div>
 
         {/* KPIs */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <KPI icon={Scale} label="Total Net Tonnes" value={totalNet.toFixed(2) + 't'} sub="All time" />
           <KPI icon={TrendingUp} label="Avg Net per Docket" value={avgNet.toFixed(2) + 't'} sub={`From ${dockets.length} records`} />
           <KPI icon={BarChart2} label="Verified Dockets" value={verified} sub={`${dockets.length > 0 ? Math.round(verified / dockets.length * 100) : 0}% completion rate`} />

@@ -65,7 +65,7 @@ export default function AuditTrail() {
             <h1 className="text-2xl font-900 text-white mt-1" style={{ fontWeight: 900 }}>Audit Trail</h1>
             <p className="text-sm text-[#90C4F9] mt-1">Automated workflow events — verifications, emails, and system actions</p>
           </div>
-          <div className="grid grid-cols-3 border-t border-white/10">
+          <div className="grid grid-cols-1 sm:grid-cols-3 border-t border-white/10">
             {[
               { label: 'Total Events', value: logs.length },
               { label: 'Verifications', value: byType['docket_verified'] || 0 },
@@ -105,8 +105,8 @@ export default function AuditTrail() {
         </div>
 
         {/* Log Table */}
-        <div className="rounded-[18px] bg-white border border-[#EAEEF5] shadow-[0_2px_18px_rgba(11,25,41,0.06)] overflow-hidden">
-          <div className="hidden md:grid border-b border-[#EAEEF5] bg-[#F4F7FC]" style={{ gridTemplateColumns: '160px 1fr 1fr 120px 80px 100px' }}>
+        <div className="rounded-[18px] bg-white border border-[#EAEEF5] shadow-[0_2px_18px_rgba(11,25,41,0.06)] overflow-x-auto">
+          <div className="hidden md:grid border-b border-[#EAEEF5] bg-[#F4F7FC] grid-cols-[160px_1fr_1fr_120px_80px_100px]">
             {['Time', 'Ticket / Details', 'Customer', 'Rego', 'Net (t)', 'Status'].map(h => (
               <div key={h} className="px-4 py-3 text-[10px] font-bold tracking-[1.5px] uppercase" style={{ color: 'var(--mx-muted-2)' }}>{h}</div>
             ))}
@@ -126,7 +126,7 @@ export default function AuditTrail() {
             const statusStyle = STATUS_STYLES[log.status] || STATUS_STYLES.info;
             const time = log.created_date ? new Date(log.created_date).toLocaleString('en-AU', { day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit' }) : '—';
             return (
-              <div key={log.id} className="grid grid-cols-1 md:grid-cols-[160px_1fr_1fr_120px_80px_100px] border-b border-[#EAEEF5] last:border-b-0 hover:bg-[#F4F7FC] transition-colors">
+              <div key={log.id} className="grid grid-cols-1 md:grid-cols-[160px_1fr_1fr_120px_80px_100px] border-b border-[#EAEEF5] last:border-b-0 hover:bg-[#F4F7FC] transition-colors overflow-hidden">
                 <div className="px-4 py-3.5 flex items-center gap-2">
                   <div className="w-7 h-7 rounded-[8px] flex items-center justify-center shrink-0 bg-[#EFF4FF]">
                     <Icon className="w-3.5 h-3.5 text-[#1E4D99]" />

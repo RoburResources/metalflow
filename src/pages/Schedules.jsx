@@ -249,7 +249,7 @@ export default function Schedules() {
             <h1 className="text-2xl font-black text-white mt-1">Job Schedule</h1>
             <p className="text-sm text-[#90C4F9] mt-1">Manage driver job assignments and sequences</p>
           </div>
-          <div className="grid grid-cols-4 border-t border-white/10">
+          <div className="grid grid-cols-2 sm:grid-cols-4 border-t border-white/10">
             {[
               { label: "Total Jobs", value: jobs.length },
               { label: "Assigned", value: jobs.filter(j => j.status === "Assigned").length },
@@ -324,7 +324,7 @@ export default function Schedules() {
 
       {/* Dialog */}
       <Dialog open={open} onOpenChange={v => { setOpen(v); if (!v) setEditing(null); }}>
-        <DialogContent className="max-w-2xl rounded-[18px] border-[#EAEEF5]">
+        <DialogContent className="max-w-2xl rounded-[18px] border-[#EAEEF5] max-h-[92vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-base font-black text-[#0D1A2E]">
               {editing ? "Edit Job" : "New Job"}

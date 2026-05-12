@@ -123,7 +123,7 @@ export default function Dashboard() {
             <h1 className="text-2xl font-900 text-white mt-1" style={{ fontWeight: 900 }}>Weight Docket Dashboard</h1>
             <p className="text-sm text-[#90C4F9] mt-1">All weighbridge records, grading dockets, and material movements</p>
           </div>
-          <div className="grid grid-cols-4 border-t border-white/10">
+          <div className="grid grid-cols-2 sm:grid-cols-4 border-t border-white/10">
             {[
               { label: 'Total Dockets', value: dockets.length, sub: 'All time' },
               { label: 'Today', value: today, sub: 'Dockets today' },
