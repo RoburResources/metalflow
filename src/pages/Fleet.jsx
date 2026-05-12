@@ -220,7 +220,7 @@ export default function Fleet() {
           <div className="px-7 py-5">
             <p className="text-[10px] font-bold tracking-[2px] uppercase text-[#90C4F9]">Metal X Fleet</p>
             <h1 className="text-2xl font-900 text-white mt-1" style={{ fontWeight: 900 }}>Vehicle Usage & Maintenance</h1>
-            <p className="text-sm text-[#90C4F9] mt-1">Aggregated tonnage, activity heatmaps and maintenance triggers per registration</p>
+            <p className="text-sm text-[#90C4F9] mt-1">Aggregated tonnage, activity heatmaps, and maintenance alerts per registration</p>
           </div>
           <div className="grid grid-cols-3 border-t border-white/10">
             {[

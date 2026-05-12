@@ -47,10 +47,12 @@ export default function AddressSuggest({ label, value, onChange, placeholder, pr
 
   return (
     <div className="flex flex-col gap-1.5 relative" ref={wrapRef}>
-      <Label className="text-[10px] font-bold tracking-[1.5px] uppercase" style={{ color: 'var(--mx-muted)' }}>
-        {label}
-        {prefilled && <span className="ml-2 text-[#1B7A45] normal-case font-semibold">(from schedule)</span>}
-      </Label>
+      {label && (
+        <Label className="text-[10px] font-bold tracking-[1.5px] uppercase" style={{ color: 'var(--mx-muted)' }}>
+          {label}
+          {prefilled && <span className="ml-2 text-[#1B7A45] normal-case font-semibold">(from schedule)</span>}
+        </Label>
+      )}
       <div className="relative">
         <input
           className={mx_input}

@@ -121,7 +121,7 @@ export default function Dashboard() {
           <div className="px-7 py-6">
             <p className="text-[10px] font-bold tracking-[2px] uppercase text-[#90C4F9]">Metal X Renewables</p>
             <h1 className="text-2xl font-900 text-white mt-1" style={{ fontWeight: 900 }}>Weight Docket Dashboard</h1>
-            <p className="text-sm text-[#90C4F9] mt-1">All weighbridge records, grading dockets and material movements</p>
+            <p className="text-sm text-[#90C4F9] mt-1">All weighbridge records, grading dockets, and material movements</p>
           </div>
           <div className="grid grid-cols-4 border-t border-white/10">
             {[

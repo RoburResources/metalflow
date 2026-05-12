@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import AddressSuggest from "@/components/driver/AddressSuggest";
 
 const mx_input = "bg-white border border-[#EAEEF5] rounded-lg text-sm font-medium focus:ring-2 focus:ring-[#1E4D99] focus:border-[#1E4D99] placeholder:text-[#AAB0C4]";
 
@@ -39,12 +40,10 @@ function ClientForm({ initial, onSave, onClose, saving }) {
           <Input className={mx_input} type="email" value={form.email} onChange={e => set("email", e.target.value)} placeholder="accounts@company.com.au" />
         </div>
         <div className="col-span-2 flex flex-col gap-1.5">
-          <Label className="text-[10px] font-bold tracking-[1.5px] uppercase text-[#7A8898]">Billing Address</Label>
-          <Input className={mx_input} value={form.billing_address} onChange={e => set("billing_address", e.target.value)} placeholder="Full billing address" />
+          <AddressSuggest label="Billing Address" placeholder="Full billing address" value={form.billing_address} onChange={v => set("billing_address", v)} />
         </div>
         <div className="col-span-2 flex flex-col gap-1.5">
-          <Label className="text-[10px] font-bold tracking-[1.5px] uppercase text-[#7A8898]">Site Address</Label>
-          <Input className={mx_input} value={form.site_address} onChange={e => set("site_address", e.target.value)} placeholder="Physical site address" />
+          <AddressSuggest label="Site Address" placeholder="Physical site address" value={form.site_address} onChange={v => set("site_address", v)} />
         </div>
         <div className="col-span-2 flex flex-col gap-1.5">
           <Label className="text-[10px] font-bold tracking-[1.5px] uppercase text-[#7A8898]">Notes</Label>
@@ -135,7 +134,7 @@ export default function Clients() {
           <div className="px-7 py-6">
             <p className="text-[10px] font-bold tracking-[2px] uppercase text-[#90C4F9]">Metal X Renewables</p>
             <h1 className="text-2xl font-black text-white mt-1">Client Directory</h1>
-            <p className="text-sm text-[#90C4F9] mt-1">Manage client details for docket pre-filling and notifications</p>
+            <p className="text-sm text-[#90C4F9] mt-1">Manage client details for docket pre-filling and email notifications</p>
           </div>
           <div className="grid grid-cols-3 border-t border-white/10">
             {[

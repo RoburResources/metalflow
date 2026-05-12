@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import AddressSuggest from "@/components/driver/AddressSuggest";
 
 const statusColors = {
   Assigned:    "bg-[#EFF4FF] text-[#1E4D99] border-[#DCE9FA]",
@@ -23,9 +24,81 @@ const EMPTY = {
 
 const mx_input = "bg-white border border-[#EAEEF5] rounded-lg text-sm font-medium focus:ring-2 focus:ring-[#1E4D99] focus:border-[#1E4D99] placeholder:text-[#AAB0C4]";
 
-function JobForm({ initial, onSave, onClose, saving }) {
+function ClientSuggest({ value, onChange, clients }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef();
+  const filtered = clients.filter(c => c.active && c.company_name?.toLowerCase().includes(value.toLowerCase())).slice(0, 6);
+
+  useEffect(() => {
+    const handler = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  return (
+    <div className="relative" ref={ref}>
+      <Input
+        className={mx_input}
+        value={value}
+        onChange={e => { onChange(e.target.value); setOpen(true); }}
+        onFocus={() => setOpen(true)}
+        placeholder="e.g. Acme Metals"
+      />
+      {open && filtered.length > 0 && (
+        <div className="absolute z-50 top-full mt-1 w-full bg-white border border-[#EAEEF5] rounded-[10px] shadow-lg overflow-hidden">
+          {filtered.map(c => (
+            <button key={c.id} type="button" onMouseDown={() => { onChange(c.company_name); setOpen(false); }}
+              className="w-full text-left px-3 py-2 text-sm hover:bg-[#EFF4FF] text-[#0D1A2E] border-b border-[#EAEEF5] last:border-0">
+              <span className="font-semibold">{c.company_name}</span>
+              {c.site_address && <span className="text-xs text-[#AAB0C4] ml-2">{c.site_address}</span>}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function DriverSuggest({ value, onChange, driverOptions }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef();
+  const filtered = [...new Set(driverOptions)].filter(d => d?.toLowerCase().includes(value.toLowerCase())).slice(0, 5);
+
+  useEffect(() => {
+    const handler = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  return (
+    <div className="relative" ref={ref}>
+      <Input
+        className={mx_input}
+        value={value}
+        onChange={e => { onChange(e.target.value); setOpen(true); }}
+        onFocus={() => setOpen(true)}
+        placeholder="Driver's full name"
+      />
+      {open && filtered.length > 0 && (
+        <div className="absolute z-50 top-full mt-1 w-full bg-white border border-[#EAEEF5] rounded-[10px] shadow-lg overflow-hidden">
+          {filtered.map(d => (
+            <button key={d} type="button" onMouseDown={() => { onChange(d); setOpen(false); }}
+              className="w-full text-left px-3 py-2 text-sm hover:bg-[#EFF4FF] text-[#0D1A2E] border-b border-[#EAEEF5] last:border-0">
+              {d}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function JobForm({ initial, onSave, onClose, saving, clients, previousJobs }) {
   const [form, setForm] = useState(initial || EMPTY);
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
+
+  const driverOptions = previousJobs.map(j => j.driver_name).filter(Boolean);
+  const regoOptions = [...new Set(previousJobs.map(j => j.vehicle_rego).filter(Boolean))];
 
   return (
     <div className="space-y-4">
@@ -47,15 +120,20 @@ function JobForm({ initial, onSave, onClose, saving }) {
         </div>
         <div className="flex flex-col gap-1.5">
           <Label className="text-[10px] font-bold tracking-[1.5px] uppercase text-[#7A8898]">Driver Name</Label>
-          <Input className={mx_input} value={form.driver_name} onChange={e => set("driver_name", e.target.value)} placeholder="Driver full name" />
+          <DriverSuggest value={form.driver_name} onChange={v => set("driver_name", v)} driverOptions={driverOptions} />
         </div>
         <div className="flex flex-col gap-1.5">
           <Label className="text-[10px] font-bold tracking-[1.5px] uppercase text-[#7A8898]">Vehicle Rego</Label>
-          <Input className={mx_input} value={form.vehicle_rego} onChange={e => set("vehicle_rego", e.target.value)} placeholder="e.g. 1ISD240" />
+          <div className="relative">
+            <Input className={mx_input} value={form.vehicle_rego} onChange={e => set("vehicle_rego", e.target.value)} placeholder="e.g. 1ISD240" list="rego-options" />
+            <datalist id="rego-options">
+              {regoOptions.map(r => <option key={r} value={r} />)}
+            </datalist>
+          </div>
         </div>
         <div className="flex flex-col gap-1.5">
           <Label className="text-[10px] font-bold tracking-[1.5px] uppercase text-[#7A8898]">Client</Label>
-          <Input className={mx_input} value={form.client_name} onChange={e => set("client_name", e.target.value)} placeholder="Client company name" />
+          <ClientSuggest value={form.client_name} onChange={v => set("client_name", v)} clients={clients} />
         </div>
         <div className="flex flex-col gap-1.5">
           <Label className="text-[10px] font-bold tracking-[1.5px] uppercase text-[#7A8898]">Expected Material</Label>
@@ -71,11 +149,11 @@ function JobForm({ initial, onSave, onClose, saving }) {
         </div>
         <div className="col-span-2 flex flex-col gap-1.5">
           <Label className="text-[10px] font-bold tracking-[1.5px] uppercase text-[#7A8898]">Pickup Location</Label>
-          <Input className={mx_input} value={form.pickup_location} onChange={e => set("pickup_location", e.target.value)} placeholder="Pickup address" />
+          <AddressSuggest label="" placeholder="Pickup address" value={form.pickup_location} onChange={v => set("pickup_location", v)} />
         </div>
         <div className="col-span-2 flex flex-col gap-1.5">
           <Label className="text-[10px] font-bold tracking-[1.5px] uppercase text-[#7A8898]">Delivery Location</Label>
-          <Input className={mx_input} value={form.delivery_location} onChange={e => set("delivery_location", e.target.value)} placeholder="Delivery address" />
+          <AddressSuggest label="" placeholder="Delivery address" value={form.delivery_location} onChange={v => set("delivery_location", v)} />
         </div>
         <div className="flex flex-col gap-1.5">
           <Label className="text-[10px] font-bold tracking-[1.5px] uppercase text-[#7A8898]">Sequence #</Label>
@@ -124,6 +202,11 @@ export default function Schedules() {
     queryFn: () => base44.entities.Schedule.list("-start_time", 200),
   });
 
+  const { data: clients = [] } = useQuery({
+    queryKey: ["clients"],
+    queryFn: () => base44.entities.Client.list("-created_date", 200),
+  });
+
   const save = useMutation({
     mutationFn: (form) =>
       editing ? base44.entities.Schedule.update(editing.id, form) : base44.entities.Schedule.create(form),
@@ -164,7 +247,7 @@ export default function Schedules() {
           <div className="px-7 py-6">
             <p className="text-[10px] font-bold tracking-[2px] uppercase text-[#90C4F9]">Metal X Renewables</p>
             <h1 className="text-2xl font-black text-white mt-1">Job Schedule</h1>
-            <p className="text-sm text-[#90C4F9] mt-1">Manage driver job sequences and assignments</p>
+            <p className="text-sm text-[#90C4F9] mt-1">Manage driver job assignments and sequences</p>
           </div>
           <div className="grid grid-cols-4 border-t border-white/10">
             {[
@@ -252,6 +335,8 @@ export default function Schedules() {
             onSave={(form) => save.mutate(form)}
             onClose={() => { setOpen(false); setEditing(null); }}
             saving={save.isPending}
+            clients={clients}
+            previousJobs={jobs}
           />
         </DialogContent>
       </Dialog>
