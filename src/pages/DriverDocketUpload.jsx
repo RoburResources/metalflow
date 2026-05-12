@@ -483,7 +483,6 @@ export default function DriverDocketUpload() {
              <div className="flex gap-3">
               <Button
                 onClick={() => setShowPreview(true)}
-                disabled={!isReady}
                 variant="outline"
                 className="flex-1 h-14 text-base font-black rounded-[14px]"
               >
