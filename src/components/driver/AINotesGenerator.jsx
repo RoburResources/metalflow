@@ -3,7 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { Loader2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-export default function AINotesGenerator({ field, docketData, onGenerate }) {
+export default function AINotesGenerator({ field, docketData, onGenerate, prompt }) {
   const [loading, setLoading] = useState(false);
 
   const prompts = {
@@ -26,16 +26,18 @@ IMPORTANT: Your response must be 1-2 sentences maximum. No more.`
   };
 
   const handleGenerate = async () => {
-    if (!prompts[field]) return;
+    const selectedPrompt = prompt || prompts[field];
+    if (!selectedPrompt) return;
     setLoading(true);
     try {
       const response = await base44.integrations.Core.InvokeLLM({
-        prompt: prompts[field],
+        prompt: selectedPrompt,
         model: 'claude_sonnet_4_6'
       });
       onGenerate(field, response);
     } catch (error) {
       console.error('Failed to generate notes:', error);
+      alert('Failed to generate notes. Please try again.')
     } finally {
       setLoading(false);
     }

@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 
 import ScheduleLookup from "@/components/driver/ScheduleLookup";
 import AddressSuggest from "@/components/driver/AddressSuggest";
+import FromCompanySuggest from "@/components/driver/FromCompanySuggest";
 import AIAssistPanel from "@/components/driver/AIAssistPanel";
 import PhotoAIPanel from "@/components/driver/PhotoAIPanel";
 import AINotesGenerator from "@/components/driver/AINotesGenerator";
@@ -407,9 +408,11 @@ export default function DriverDocketUpload() {
                   onChange={val => set('from_location', val)}
                   prefilled={prefilledFields.from_location}
                 />
-                <FieldRow label="FROM COMPANY">
-                  <Input className={mx_input} placeholder="COMPANY NAME" value={form.from_company || ''} onChange={e => set('from_company', e.target.value)} />
-                </FieldRow>
+                <FromCompanySuggest
+                  value={form.from_company}
+                  onChange={val => set('from_company', val)}
+                  prefilled={prefilledFields.from_company}
+                />
                 <AddressSuggest
                   label="TO LOCATION"
                   placeholder="DELIVERY ADDRESS"
@@ -429,8 +432,9 @@ export default function DriverDocketUpload() {
               <h2 className="text-base font-black mb-4" style={{ color: 'var(--mx-text)' }}>PHOTOS</h2>
               <PhotoAIPanel
                 photoUrls={form.photo_urls}
-                onPhotosChange={urls => setForm(f => ({ ...f, photo_urls: urls }))}
+                onPhotosChange={urls => { setForm(f => ({ ...f, photo_urls: urls })); }}
                 onAIResult={res => { setPhotoAIResult(res); if (res.contamination_detected) set('contamination_notes', res.contamination_detected); }}
+                autoAnalyze={true}
               />
               {photoAIResult && <div className="mt-3"><PhotoAIBanner result={photoAIResult} onDismiss={() => setPhotoAIResult(null)} /></div>}
             </div>
@@ -450,29 +454,31 @@ export default function DriverDocketUpload() {
                 <FieldRow label="MATERIAL GRADE">
                   <Input className={mx_input} placeholder="E.G. HEAVY MELT STEEL" value={form.material_grade || ''} onChange={e => set('material_grade', e.target.value)} />
                 </FieldRow>
-                <FieldRow label="CONTAMINATION NOTES">
+                <FieldRow label={`NOTE TO ${form.driver_name || 'DRIVER'}`}>
                   <div className="flex gap-2 items-start">
                     <textarea rows={2} className="w-full bg-white border border-[#EAEEF5] rounded-lg text-sm font-medium p-3 focus:ring-2 focus:ring-[#1E4D99] outline-none resize-none uppercase placeholder:text-[#AAB0C4] placeholder:normal-case"
-                      placeholder="Any contamination observations…"
+                      placeholder="Contamination details: kg, tonnes, percentage…"
                       value={form.contamination_notes || ''}
                       onChange={e => set('contamination_notes', e.target.value)} />
                     <AINotesGenerator
                       field="contamination_notes"
                       docketData={form}
                       onGenerate={(field, content) => set(field, content)}
+                      prompt="Generate a brief contamination assessment for a recycling load with deduction amounts (kg, tonnes, or percentage)."
                     />
                   </div>
                 </FieldRow>
                 <FieldRow label="METAL X COMMENTS">
                   <div className="flex gap-2 items-start">
                     <textarea rows={3} className="w-full bg-white border border-[#EAEEF5] rounded-lg text-sm font-medium p-3 focus:ring-2 focus:ring-[#1E4D99] outline-none resize-none uppercase placeholder:text-[#AAB0C4] placeholder:normal-case"
-                      placeholder="Any notes about this load…"
+                      placeholder="Professional client-facing notes about this load…"
                       value={form.comments || ''}
                       onChange={e => set('comments', e.target.value)} />
                     <AINotesGenerator
                       field="comments"
                       docketData={form}
                       onGenerate={(field, content) => set(field, content)}
+                      prompt="Generate professional, formal notes suitable for official client documentation. Keep to 2 sentences."
                     />
                   </div>
                 </FieldRow>
