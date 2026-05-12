@@ -1,0 +1,43 @@
+{
+  "name": "ContractApproval",
+  "type": "object",
+  "properties": {
+    "customer_name": {
+      "type": "string",
+      "description": "Customer company name"
+    },
+    "approved_material_grades": {
+      "type": "array",
+      "description": "List of approved material grades for this customer",
+      "items": {
+        "type": "string"
+      }
+    },
+    "tolerance_percentage": {
+      "type": "number",
+      "description": "Weight tolerance percentage (e.g., 5 for 5%)",
+      "default": 5
+    },
+    "min_tonnage": {
+      "type": "number",
+      "description": "Minimum acceptable tonnage per load",
+      "default": 0
+    },
+    "max_tonnage": {
+      "type": "number",
+      "description": "Maximum acceptable tonnage per load"
+    },
+    "requires_manual_review": {
+      "type": "boolean",
+      "description": "Whether all dockets from this customer require manual review",
+      "default": false
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional contract notes or restrictions"
+    }
+  },
+  "required": [
+    "customer_name"
+  ]
+}

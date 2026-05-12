@@ -10,6 +10,7 @@ import ScheduleLookup from "@/components/driver/ScheduleLookup";
 import AddressSuggest from "@/components/driver/AddressSuggest";
 import FromCompanySuggest from "@/components/driver/FromCompanySuggest";
 import ClientNameSuggest from "@/components/driver/ClientNameSuggest";
+import ComplianceWarnings from "@/components/driver/ComplianceWarnings";
 import AIAssistPanel from "@/components/driver/AIAssistPanel";
 import PhotoAIPanel from "@/components/driver/PhotoAIPanel";
 import AINotesGenerator from "@/components/driver/AINotesGenerator";
@@ -180,6 +181,8 @@ export default function DriverDocketUpload() {
   const [showPreview, setShowPreview] = useState(false);
   const [pendingDockets, setPendingDockets] = useState([]);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
+  const [complianceFlags, setComplianceFlags] = useState([]);
+  const [complianceCheck, setComplianceCheck] = useState(null);
 
   const set = (field, val) => setForm(f => ({ ...f, [field]: typeof val === 'string' ? val.toUpperCase() : val }));
   const setMany = (updates) => setForm(f => ({ ...f, ...Object.fromEntries(Object.entries(updates).map(([k, v]) => [k, typeof v === 'string' ? v.toUpperCase() : v])) }));
@@ -314,6 +317,22 @@ export default function DriverDocketUpload() {
     if (!form.goods_weighed) errors.push('Goods/Material is required');
     setValidationErrors(errors);
     return errors.length === 0;
+  };
+
+  const checkCompliance = async () => {
+    try {
+      const result = await base44.functions.invoke('validateDocketCompliance', {
+        customer_name: form.customer_name,
+        material_grade: form.material_grade,
+        net_tonnes: parseFloat(form.net_tonnes) || 0
+      });
+      setComplianceCheck(result.data);
+      setComplianceFlags(result.data.flags || []);
+    } catch (error) {
+      console.error('Compliance check failed:', error);
+      setComplianceFlags([]);
+      setComplianceCheck(null);
+    }
   };
 
   return (
@@ -469,9 +488,22 @@ export default function DriverDocketUpload() {
               <AIAssistPanel form={form} onUpdate={handleAIUpdate} />
             </div>
 
-            {/* ── Step 7: Notes & Material ── */}
+            {/* ── Step 8: Compliance Check ── */}
             <div className="rounded-[18px] bg-white border border-[#EAEEF5] shadow-[0_10px_40px_rgba(11,25,41,0.10)] p-5">
               <p className="text-[10px] font-bold tracking-[2px] uppercase mb-1" style={{ color: 'var(--mx-muted-2)' }}>Step 8</p>
+              <h2 className="text-base font-black mb-4" style={{ color: 'var(--mx-text)' }}>COMPLIANCE CHECK</h2>
+              <button
+                onClick={checkCompliance}
+                className="w-full px-4 py-2 bg-[#EFF4FF] border border-[#1E4D99] rounded-lg text-xs font-bold text-[#1E4D99] hover:bg-[#E5EEFB] transition-colors mb-4"
+              >
+                VALIDATE AGAINST CONTRACT RULES
+              </button>
+              {complianceCheck && <ComplianceWarnings flags={complianceFlags} canProceed={complianceCheck.canProceed} requiresManualReview={complianceCheck.requiresManualReview} />}
+            </div>
+
+            {/* ── Step 9: Notes & Material ── */}
+            <div className="rounded-[18px] bg-white border border-[#EAEEF5] shadow-[0_10px_40px_rgba(11,25,41,0.10)] p-5">
+              <p className="text-[10px] font-bold tracking-[2px] uppercase mb-1" style={{ color: 'var(--mx-muted-2)' }}>Step 10</p>
               <h2 className="text-base font-black mb-4" style={{ color: 'var(--mx-text)' }}>NOTES & GRADING</h2>
               <div className="grid grid-cols-1 gap-4">
                 <FieldRow label="MATERIAL GRADE">
