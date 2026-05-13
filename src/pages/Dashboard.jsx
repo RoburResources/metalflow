@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { Search, Plus, FileText, Trash2, Eye, Truck, ShieldCheck, BarChart2, CalendarDays, Users, Menu, X } from "lucide-react";
 import MXLogo from "@/components/docket/MXLogo";
+import DocketPDFButton from "@/components/docket/DocketPDFButton";
 
 const statusColors = {
   Draft: 'bg-[#F4F7FC] text-[#7A8898] border-[#EAEEF5]',
@@ -243,6 +244,7 @@ export default function Dashboard() {
                     <Eye className="w-3.5 h-3.5" />
                   </button>
                 </Link>
+                <DocketPDFButton docket={d} />
                 <button onClick={() => { if (confirm('Delete this docket?')) del.mutate(d.id); }} className="w-7 h-7 rounded-[7px] bg-[#F4F7FC] flex items-center justify-center hover:bg-red-50 text-[#AAB0C4] hover:text-red-400">
                   <Trash2 className="w-3.5 h-3.5" />
                 </button>
