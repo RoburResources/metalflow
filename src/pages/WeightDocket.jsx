@@ -3,7 +3,8 @@ import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Printer, Download, X, ToggleLeft, ToggleRight, ChevronLeft } from "lucide-react";
+import { Printer, Download, X, ToggleLeft, ToggleRight, ChevronLeft, ShieldCheck } from "lucide-react";
+import VerifySignModal from "@/components/docket/VerifySignModal";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import { Link, useNavigate } from "react-router-dom";
@@ -77,6 +78,7 @@ export default function WeightDocket() {
     setTimeout(() => win.print(), 700);
   };
 
+  const [verifyOpen, setVerifyOpen] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const handleDownloadPDF = async () => {
     if (!printRef.current) return;
@@ -130,6 +132,15 @@ export default function WeightDocket() {
             </span>
           </div>
           <div className="flex items-center gap-2">
+            {editId && formData.status !== 'Verified' && (
+              <Button
+                onClick={() => setVerifyOpen(true)}
+                className="h-9 px-4 text-sm font-bold rounded-[10px] text-white"
+                style={{ background: 'linear-gradient(135deg,#1B7A45,#22C55E)' }}
+              >
+                <ShieldCheck className="w-4 h-4 mr-1.5" /> Verify
+              </Button>
+            )}
             <button
               onClick={() => setTheme(t => t === 'professional' ? 'friendly' : 'professional')}
               className="flex items-center gap-2 px-3 py-1.5 rounded-[8px] border border-[#EAEEF5] text-xs hover:bg-[#EFF4FF] transition-colors"
@@ -171,6 +182,19 @@ export default function WeightDocket() {
           </div>
         </div>
       </main>
+
+      {/* Verify & Sign Modal */}
+      <VerifySignModal
+        open={verifyOpen}
+        onClose={() => setVerifyOpen(false)}
+        docket={formData}
+        onConfirm={async (signatureData) => {
+          const updated = { ...formData, status: 'Verified', driver_signature: signatureData || formData.driver_signature };
+          setFormData(updated);
+          setVerifyOpen(false);
+          save.mutate(updated);
+        }}
+      />
 
       {/* Full Preview Modal */}
       <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
