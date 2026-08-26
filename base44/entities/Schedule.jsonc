@@ -1,0 +1,59 @@
+{
+  "name": "Schedule",
+  "type": "object",
+  "properties": {
+    "job_id": {
+      "type": "string",
+      "description": "Unique job reference e.g. JOB-001"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "Assigned",
+        "In Progress",
+        "Completed",
+        "Cancelled"
+      ],
+      "default": "Assigned"
+    },
+    "driver_name": {
+      "type": "string"
+    },
+    "vehicle_rego": {
+      "type": "string"
+    },
+    "start_time": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "end_time": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "pickup_location": {
+      "type": "string"
+    },
+    "delivery_location": {
+      "type": "string"
+    },
+    "client_name": {
+      "type": "string"
+    },
+    "expected_material": {
+      "type": "string"
+    },
+    "sequence_number": {
+      "type": "integer"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "linked_ticket_no": {
+      "type": "string",
+      "description": "Ticket number of the WeightDocket linked to this job"
+    }
+  },
+  "required": [
+    "job_id"
+  ]
+}
